@@ -19,6 +19,9 @@
     
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- App Logic (Firebase) -->
+    <script type="module" src="linktree-app.js"></script>
 
     <script>
         tailwind.config = {
@@ -280,7 +283,11 @@
             
             <div class="w-12 h-1 bg-brand-200 mx-auto rounded-full mb-6"></div>
 
-            <div class="flex flex-col gap-4">
+            <!-- Container for Dynamic Links -->
+            <div id="dynamic-links-container" class="flex flex-col gap-4 mb-4"></div>
+
+            <!-- Fallback Static Links -->
+            <div id="fallback-links" class="flex flex-col gap-4 hidden">
                 
                 <!-- Shopee Button -->
                 <a href="https://br.shp.ee/FLxK9z9g" target="_blank" class="relative group block">
