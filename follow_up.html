@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow-Up | Encantos de Menina</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config for Custom Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        pink: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
+                        },
+                        peach: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #fdf2f8; /* pink-50 */
+            color: #4b5563; /* gray-600 */
+        }
+        
+        .glass-header {
+            background: linear-gradient(135deg, #fbcfe8 0%, #ffedd5 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #fbcfe8;
+            border-radius: 20px;
+        }
+        
+        /* Smooth category transition */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen">
+    <!-- Root element for React -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Componente de ícones reutilizáveis
+        const Icons = {
+            Crown: () => <i data-lucide="crown" className="w-6 h-6 text-pink-500"></i>,
+            Heart: () => <i data-lucide="heart" className="w-5 h-5 text-pink-400"></i>,
+            Ghost: () => <i data-lucide="ghost" className="w-5 h-5"></i>,
+            Hourglass: () => <i data-lucide="hourglass" className="w-5 h-5"></i>,
+            AlertCircle: () => <i data-lucide="alert-circle" className="w-5 h-5"></i>,
+            Hand: () => <i data-lucide="hand" className="w-5 h-5"></i>,
+            Copy: () => <i data-lucide="copy" className="w-4 h-4"></i>,
+            Check: () => <i data-lucide="check" className="w-4 h-4"></i>,
+            Sparkles: () => <i data-lucide="sparkles" className="w-5 h-5 text-yellow-500"></i>
+        };
+
+        // Componente para exibir e copiar um script individual
+        const ScriptCard = ({ title, content, badge, borderColor }) => {
+            const [copied, setCopied] = useState(false);
+
+            const handleCopy = () => {
+                // Lógica de cópia compatível
+                const textArea = document.createElement("textarea");
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                } catch (err) {
+                    console.error('Falha ao copiar', err);
+                }
+                document.body.removeChild(textArea);
+            };
+
+            return (
+                <div className={`bg-white rounded-2xl p-5 mb-4 shadow-sm border-l-4 ${borderColor} transition-all duration-300 hover:shadow-md`}>
+                    <div className="flex justify-between items-start mb-3">
+                        <div className="flex items-center gap-2">
+                            <Icons.Heart />
+                            <h3 className="font-bold text-gray-700 text-lg">{title}</h3>
+                        </div>
+                        {badge && (
+                            <span className="bg-peach-100 text-pink-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-peach-200">
+                                {badge}
+                            </span>
+                        )}
+                    </div>
+                    
+                    <div className="bg-pink-50/50 rounded-xl p-4 mb-4 text-gray-600 text-sm leading-relaxed border border-pink-100 italic relative">
+                        "{content}"
+                    </div>
+
+                    <button 
+                        onClick={handleCopy}
+                        className={`w-full py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 ${
+                            copied 
+                            ? 'bg-green-100 text-green-700 border border-green-200' 
+                            : 'bg-pink-500 text-white hover:bg-pink-600 shadow-sm hover:shadow active:transform active:scale-95'
+                        }`}
+                    >
+                        {copied ? (
+                            <><Icons.Check /> Copiado com sucesso! </>
+                        ) : (
+                            <><Icons.Copy /> Copiar Mensagem </>
+                        )}
+                    </button>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [clientName, setClientName] = useState("");
+            const [activeCategory, setActiveCategory] = useState("sumiu");
+
+            // Refresh lucide icons when component updates
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            });
+
+            const displayName = clientName.trim() ? clientName : "[Nome da Cliente]";
+
+            const categories = [
+                {
+                    id: "sumiu",
+                    label: "Sumiu após o preço",
+                    icon: <Icons.Ghost />,
+                    color: "text-purple-500",
+                    bgActive: "bg-purple-100",
+                    border: "border-purple-400"
+                },
+                {
+                    id: "pensar",
+                    label: "Vou pensar",
+                    icon: <Icons.Hourglass />,
+                    color: "text-blue-500",
+                    bgActive: "bg-blue-100",
+                    border: "border-blue-400"
+                },
+                {
+                    id: "pagamento",
+                    label: "Pgto pendente",
+                    icon: <Icons.AlertCircle />,
+                    color: "text-yellow-600",
+                    bgActive: "bg-yellow-100",
+                    border: "border-yellow-400"
+                },
+                {
+                    id: "encerramento",
+                    label: "Encerramento",
+                    icon: <Icons.Hand />,
+                    color: "text-gray-500",
+                    bgActive: "bg-gray-100",
+                    border: "border-gray-400"
+                }
+            ];
+
+            const scriptsData = {
+                sumiu: [
+                    {
+                        title: "Foco no Conforto da Bebê",
+                        badge: "Use para bebês menores",
+                        content: `Oii ${displayName}! 🌸 Tudo bem por aí? Menina, sei que a rotina com criança é super corrida, né? Passando rapidinho só pra saber se ficou alguma dúvida sobre o laço! Você prefere na faixinha de meia de seda (que é super macia e não aperta a cabecinha) ou no bico de pato forrado? Me conta como é melhor pra sua princesa! 🎀✨`
+                    },
+                    {
+                        title: "Quebrando objeção sutilmente",
+                        badge: "Se enviou várias opções",
+                        content: `Oi ${displayName}! 💖 Tudo certinho? Ontem te mandei os modelos e acabei não te perguntando: qual cor você achou que combina mais com as roupinhas da sua pequena? Se quiser, me manda foto do lookinho que te ajudo a escolher o laço perfeito pra ela brilhar! 👑🌸`
+                    }
+                ],
+                pensar: [
+                    {
+                        title: "Senso de Urgência Delicado",
+                        badge: "Cores exclusivas",
+                        content: `Oii ${displayName}! ✨ Passando pra te dar um recadinho! Lembra daquele laço lindo que você amou? A fita daquela cor exata está quase no fim aqui no ateliê e não sei quando o fornecedor vai repor. Como você tinha gostado, lembrei de você na hora! Quer que eu já deixe um separadinho com o nome da sua princesa? 🎀💖`
+                    },
+                    {
+                        title: "Reativando Desejo",
+                        badge: "Envie com uma foto",
+                        content: `Oi ${displayName}! 🌸 Olha só o que acabei de montar aqui no ateliê e lembrei de você na hora! Achei a carinha da sua filha. O que você acha de levarmos esse modelo junto com aquele que você estava pensando? Fica um kit perfeito pro final de semana! ✨👑`
+                    }
+                ],
+                pagamento: [
+                    {
+                        title: "Apoio Técnico (Sem cobrança)",
+                        badge: "Link/Pix Expirado",
+                        content: `Oie ${displayName}! 💖 Tudo bem com vocês? O sistema aqui do ateliê me avisou que o pagamento do seu pedido não foi concluído. Às vezes a internet cai bem na hora ou o app do banco trava, super normal! 😅 Quer que eu te mande a chave Pix direto ou gere um novo link pra facilitar pra você? Só me avisar! 🎀`
+                    },
+                    {
+                        title: "Garantindo a Reserva",
+                        badge: "Após 24h do pedido",
+                        content: `Oi ${displayName}! 🌸 Passando pra te dar um oi e avisar que o pedido da sua princesa já está separadinho aqui com todo carinho! 🥰 Como não recebi a notificação do pagamento, vim perguntar se você teve alguma dificuldade com o link. Posso segurar as peças pra você até o fim do dia, tá bom? Me dá um alô! ✨`
+                    }
+                ],
+                encerramento: [
+                    {
+                        title: "Desapego Elegante e Doce",
+                        badge: "Última tentativa",
+                        content: `Oii ${displayName}! 💖 Imagino que a rotina aí deve estar super corrida! Vou encerrar o seu atendimento por agora pra não ficar te enchendo de mensagens, tá bom? As pecinhas vão voltar pra vitrine do ateliê, mas quando as coisas acalmarem e você quiser ver laços novos pra sua princesa, é só me chamar. Um beijo enorme pra vocês! 🌸👑`
+                    },
+                    {
+                        title: "Deixando a porta aberta",
+                        badge: "Convite sutil",
+                        content: `Oi ${displayName}! ✨ Como não nos falamos mais, estou encerrando seu pedido aqui no sistema por enquanto. Mas ó, foi um prazer te atender! Salva meu número aí, e quando precisar de um laço perfeito pra uma ocasião especial (ou só pra deixar ela ainda mais linda no dia a dia), o ateliê estará de portas abertas. Beijinhos! 🎀💖`
+                    }
+                ]
+            };
+
+            const currentScripts = scriptsData[activeCategory] || [];
+        const activeCategoryData = categories.find(c => c.id === activeCategory);
+
+        return (
+            <div className="max-w-md mx-auto min-h-screen bg-white shadow-xl flex flex-col"> 
+                {/* Header Top Gradient Area */}
+                <div className="glass-header pt-8 pb-12 px-6 rounded-b-[2rem] relative z-10">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2 font-sans tracking-tight">
+                                    <Icons.Crown /> 
+                                    Follow-Up
+                                </h1>
+                                <p className="text-pink-600 text-sm font-semibold mt-1">Encantos de Menina</p>
+                            </div>
+                            <div className="w-12 h-12 bg-white/60 rounded-full flex items-center justify-center shadow-sm backdrop-blur-sm border border-white/50">
+                                <span className="text-2xl">🎀</span>
+                            </div>
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/60">
+                            <label className="block text-gray-700 text-sm font-bold mb-2 ml-1">
+                                Com qual mamãe vamos falar agora?
+                            </label>
+                            <input 
+                                type="text" 
+                                placeholder="Digite o nome da cliente aqui..."
+                                value={clientName}
+                                onChange={(e) => setClientName(e.target.value)}
+                                className="w-full bg-white border border-pink-200 text-gray-800 text-base rounded-xl px-4 py-3 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all placeholder-gray-400"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="px-5 -mt-6 relative z-20">
+                        
+                        {/* Regra de Ouro Card */}
+                        <div className="bg-gradient-to-r from-pink-500 to-pink-400 rounded-2xl p-4 shadow-lg mb-6 text-white flex items-center justify-between border border-pink-300">
+                            <div>
+                                <h2 className="text-xs font-black tracking-wider text-pink-100 uppercase mb-1 flex items-center gap-1">
+                                    <Icons.Sparkles /> Regra de Ouro
+                                </h2>
+                                <p className="font-semibold text-sm">Cadência 2 - 2 - 1</p>
+                            </div>
+                            <div className="flex gap-1.5">
+                                <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">24h</span>
+                                <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">3 dias</span>
+                                <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-lg">7 dias</span>
+                            </div>
+                        </div>
+
+                        {/* Categories Tabs */}
+                        <div className="grid grid-cols-4 gap-2 mb-6">
+                            {categories.map((cat) => (
+                                <button
+                                    key={cat.id}
+                                    onClick={() => setActiveCategory(cat.id)}
+                                    className={`flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-300 border ${
+                                        activeCategory === cat.id 
+                                        ? `${cat.bgActive} ${cat.border} shadow-sm transform scale-105` 
+                                        : 'bg-gray-50 border-transparent hover:bg-pink-50 text-gray-400'
+                                    }`}
+                                >
+                                    <div className={`${activeCategory === cat.id ? cat.color : 'text-gray-400'} mb-1.5 transition-colors`}>
+                                        {cat.icon}
+                                    </div>
+                                    <span className={`text-[10px] font-bold text-center leading-tight ${
+                                        activeCategory === cat.id ? 'text-gray-800' : 'text-gray-500'
+                                    }`}>
+                                        {cat.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Scripts List */}
+                        <div className="custom-scrollbar pb-6" key={activeCategory}>
+                            <h2 className="text-gray-800 font-bold mb-4 flex items-center gap-2 pl-1">
+                                <span className="text-pink-500">✨</span> Scripts Sugeridos
+                            </h2>
+                            
+                            <div className="fade-enter-active">
+                                {currentScripts.map((script, index) => (
+                                    <ScriptCard 
+                                        key={index}
+                                        title={script.title}
+                                        badge={script.badge}
+                                        content={script.content}
+                                        borderColor={activeCategoryData.border}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Dica da Consultora Footer - Correção do posicionamento */}
+                    <div className="mt-auto bg-pink-50 border-t border-pink-100 p-6 rounded-t-3xl shadow-[0_-10px_20px_-5px_rgba(0,0,0,0.05)] z-30">
+                        <div className="flex items-start gap-4 max-w-md mx-auto">
+                            <div className="bg-pink-100 w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border border-pink-200">
+                                <span className="text-xl">🎀</span>
+                            </div>
+                            <div>
+                                <h4 className="text-pink-800 font-bold text-sm mb-1.5">Dica do Ateliê</h4>
+                                <p className="text-pink-700/90 text-xs leading-relaxed font-medium">
+                                    Sempre que possível, mande um vídeo curtinho de 5s mostrando o brilho do laço na luz natural ou um áudio carinhoso antes de enviar o texto. Isso humaniza o atendimento e derrete o coração das mamães! 💖
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
