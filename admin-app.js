@@ -29,6 +29,7 @@ const modal = document.getElementById('link-modal');
 const modalContent = document.getElementById('link-modal-content');
 const linkForm = document.getElementById('link-form');
 const btnAddNew = document.getElementById('btn-add-new');
+const btnImportDefaults = document.getElementById('btn-import-defaults');
 const btnCloseModal = document.getElementById('btn-close-modal');
 const btnCancelModal = document.getElementById('btn-cancel-modal');
 
@@ -188,6 +189,37 @@ function closeModal() {
 btnAddNew.addEventListener('click', () => openModal());
 btnCloseModal.addEventListener('click', closeModal);
 btnCancelModal.addEventListener('click', closeModal);
+
+// Importar links padrões
+const defaultLinks = [
+    { title: 'Shopee', subtitle: 'Frete grátis em milhares de produtos', url: 'https://br.shp.ee/FLxK9z9g', icon: 'ph-shopping-bag', highlight: true },
+    { title: 'Compre pelo WhatsApp', subtitle: 'Atendimento personalizado', url: 'https://wa.me/5534998882385', icon: 'ph-whatsapp-logo', highlight: false },
+    { title: 'Grupo VIP (Promoções)', subtitle: 'Receba novidades em primeira mão', url: 'https://chat.whatsapp.com/DCLpzt7k4zlH2sPkBTXaNM?s=cl&p=a&mlu=3', icon: 'ph-users', highlight: false },
+    { title: 'Localização da Loja', subtitle: 'Venha nos fazer uma visita', url: '#modal-location', icon: 'ph-map-pin', highlight: false },
+    { title: 'O que as clientes dizem', subtitle: 'Avaliações de mamães reais', url: '#modal-feedback', icon: 'ph-chat-centered-text', highlight: false }
+];
+
+btnImportDefaults.addEventListener('click', async () => {
+    if(!confirm("Deseja importar os 5 links originais para o seu painel?")) return;
+    
+    btnImportDefaults.disabled = true;
+    btnImportDefaults.innerHTML = '<i class="ph ph-spinner animate-spin"></i> ...';
+    
+    try {
+        let currentOrder = maxOrder;
+        for(const link of defaultLinks) {
+            currentOrder++;
+            link.order = currentOrder;
+            await addDoc(collection(db, "linktree_links"), link);
+        }
+    } catch(e) {
+        console.error(e);
+        alert("Erro ao importar links.");
+    } finally {
+        btnImportDefaults.disabled = false;
+        btnImportDefaults.innerHTML = '<i class="ph-bold ph-download-simple"></i> Links Originais';
+    }
+});
 
 document.getElementById('link-icon').addEventListener('input', updateIconPreview);
 function updateIconPreview() {
