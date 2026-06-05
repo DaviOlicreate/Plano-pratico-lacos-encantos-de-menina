@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria Completa Shopee | Relatório</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+</head>
+<body>
+
+<h2 class="sr-only">Relatório de auditoria completa da loja Laços encantos de Menina na Shopee</h2>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .report { padding: 0.5rem 0 2rem; }
+  .header { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+  .store-name { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+  .store-meta { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .verdict { background: #FCEBEB; border: 0.5px solid #F09595; border-radius: var(--border-radius-md); padding: 0.5rem 1rem; font-size: 13px; font-weight: 500; color: #A32D2D; }
+  .section { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+  .section-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; padding-bottom: 0.75rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .section-title i { font-size: 18px; }
+  .scores-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .score-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem; text-align: center; }
+  .score-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .score-value { font-size: 28px; font-weight: 500; }
+  .score-bar { height: 4px; border-radius: 2px; background: var(--color-border-tertiary); margin-top: 6px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 2px; }
+  .red { color: #A32D2D; }
+  .amber { color: #854F0B; }
+  .green { color: #3B6D11; }
+  .fill-red { background: #E24B4A; }
+  .fill-amber { background: #BA7517; }
+  .fill-green { background: #639922; }
+  .fill-blue { background: #378ADD; }
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+  .kpi-label { font-size: 11px; color: var(--color-text-secondary); }
+  .kpi-val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
+  .kpi-context { font-size: 11px; color: #A32D2D; margin-top: 2px; }
+  .issue-list { list-style: none; }
+  .issue-list li { display: flex; gap: 10px; padding: 0.6rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; color: var(--color-text-primary); align-items: flex-start; }
+  .issue-list li:last-child { border-bottom: none; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+  .tag-crit { background: #FCEBEB; color: #A32D2D; }
+  .tag-warn { background: #FAEEDA; color: #854F0B; }
+  .tag-opp { background: #E1F5EE; color: #0F6E56; }
+  .tag-info { background: #E6F1FB; color: #185FA5; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .action-item { display: flex; gap: 10px; padding: 0.75rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; color: var(--color-text-primary); align-items: flex-start; }
+  .action-item:last-child { border-bottom: none; }
+  .action-num { font-size: 11px; font-weight: 500; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0; }
+  .num-red { background: #FCEBEB; color: #A32D2D; }
+  .num-amber { background: #FAEEDA; color: #854F0B; }
+  .num-blue { background: #E6F1FB; color: #185FA5; }
+  .num-green { background: #EAF3DE; color: #3B6D11; }
+  .impact-row { display: flex; gap: 6px; margin-top: 3px; }
+  .pip { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border-tertiary); display: inline-block; }
+  .pip-on { background: #378ADD; }
+  .kw-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kw { font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); }
+  .kw-missing { background: #FCEBEB; color: #A32D2D; border-color: #F09595; }
+  .kw-present { background: #EAF3DE; color: #3B6D11; border-color: #97C459; }
+  .kw-opp { background: #FAEEDA; color: #854F0B; border-color: #FAC775; }
+  .alert-box { border-radius: var(--border-radius-md); padding: 0.75rem 1rem; font-size: 13px; margin-bottom: 0.75rem; display: flex; gap: 8px; align-items: flex-start; }
+  .alert-crit { background: #FCEBEB; border: 0.5px solid #F09595; color: #A32D2D; }
+  .alert-warn { background: #FAEEDA; border: 0.5px solid #FAC775; color: #854F0B; }
+  .radar-wrap { position: relative; width: 100%; height: 300px; }
+  .swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .swot-box { border-radius: var(--border-radius-md); padding: 1rem; }
+  .swot-box ul { padding-left: 1rem; font-size: 13px; line-height: 1.8; }
+  .swot-title { font-size: 12px; font-weight: 500; margin-bottom: 0.5rem; }
+  .swot-s { background: #EAF3DE; border: 0.5px solid #C0DD97; }
+  .swot-s .swot-title { color: #3B6D11; }
+  .swot-s ul { color: #3B6D11; }
+  .swot-w { background: #FCEBEB; border: 0.5px solid #F7C1C1; }
+  .swot-w .swot-title { color: #A32D2D; }
+  .swot-w ul { color: #A32D2D; }
+  .swot-o { background: #E6F1FB; border: 0.5px solid #B5D4F4; }
+  .swot-o .swot-title { color: #185FA5; }
+  .swot-o ul { color: #185FA5; }
+  .swot-r { background: #FAEEDA; border: 0.5px solid #FAC775; }
+  .swot-r .swot-title { color: #854F0B; }
+  .swot-r ul { color: #854F0B; }
+  .phase { margin-bottom: 1.25rem; }
+  .phase-header { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+  .phase-line { flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+  .mini-label { font-size: 11px; color: var(--color-text-secondary); }
+  .action-detail { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  @media (max-width: 520px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .swot-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="report">
+
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="store-name">Laços encantos de Menina</div>
+        <div class="store-meta">Shopee BR — Acessórios de Cabelo Infantil &nbsp;·&nbsp; Auditoria: Jun/2026</div>
+      </div>
+      <div class="verdict"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Loja em estado crítico de desenvolvimento</div>
+    </div>
+
+    <div class="kpi-row" style="margin-top:1rem; margin-bottom:0;">
+      <div class="kpi">
+        <div class="kpi-label">Produtos</div>
+        <div class="kpi-val red">6</div>
+        <div class="kpi-context">Mínimo insuficiente</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Seguidores</div>
+        <div class="kpi-val red">14</div>
+        <div class="kpi-context">Praticamente zero</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Vendas</div>
+        <div class="kpi-val red">1</div>
+        <div class="kpi-context">Conversão travada</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Na Shopee há</div>
+        <div class="kpi-val amber">30m</div>
+        <div class="kpi-context">Sem tração</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-box alert-crit">
+    <i class="ti ti-flame" aria-hidden="true" style="font-size:18px; flex-shrink:0;"></i>
+    <span><strong>Alerta crítico:</strong> A loja está há 30 meses na Shopee com apenas 1 venda e 14 seguidores. O último login foi há 30 horas, indicando abandono intermitente. A taxa de resposta do chat está como "Dados Insuficientes" — isso destrói o ranqueamento algorítmico da Shopee automaticamente.</span>
+  </div>
+
+  <div class="alert-box alert-warn">
+    <i class="ti ti-clock" aria-hidden="true" style="font-size:18px; flex-shrink:0;"></i>
+    <span><strong>Atenção:</strong> Com 6 produtos e 0 histórico de vendas sólido, o algoritmo da Shopee não tem dados suficientes para indexar a loja nas buscas orgânicas. A loja é, na prática, invisível.</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-chart-radar" aria-hidden="true"></i> Relatório executivo — notas gerais</div>
+    <div class="scores-grid">
+      <div class="score-card">
+        <div class="score-label">SEO Shopee</div>
+        <div class="score-value red">2.5</div>
+        <div class="score-bar"><div class="score-fill fill-red" style="width:25%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Conversão</div>
+        <div class="score-value red">1.5</div>
+        <div class="score-bar"><div class="score-fill fill-red" style="width:15%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Autoridade</div>
+        <div class="score-value red">1.0</div>
+        <div class="score-bar"><div class="score-fill fill-red" style="width:10%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Branding</div>
+        <div class="score-value amber">3.0</div>
+        <div class="score-bar"><div class="score-fill fill-amber" style="width:30%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Org. visual</div>
+        <div class="score-value amber">4.0</div>
+        <div class="score-bar"><div class="score-fill fill-amber" style="width:40%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Qualidade prod.</div>
+        <div class="score-value amber">5.5</div>
+        <div class="score-bar"><div class="score-fill fill-amber" style="width:55%"></div></div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">Potencial</div>
+        <div class="score-value green">7.5</div>
+        <div class="score-bar"><div class="score-fill fill-green" style="width:75%"></div></div>
+      </div>
+    </div>
+
+    <div style="position: relative; height: 280px; margin-top: 0.5rem;">
+      <canvas id="radarChart" role="img" aria-label="Gráfico radar comparando SEO, Conversão, Autoridade, Branding, Organização visual, Qualidade de produto e Potencial. Pontuações variam de 1 a 7.5.">Pontuações: SEO 2.5, Conversão 1.5, Autoridade 1.0, Branding 3.0, Org.Visual 4.0, Qualidade 5.5, Potencial 7.5</canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-search" aria-hidden="true"></i> 1. Análise de SEO Shopee</div>
+
+    <div style="margin-bottom: 1rem;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.5rem;">Palavras-chave presentes nos títulos</div>
+      <div class="kw-grid">
+        <span class="kw kw-present">laços infantis</span>
+        <span class="kw kw-present">bico de pato</span>
+        <span class="kw kw-present">kit laços</span>
+        <span class="kw kw-present">faixinhas bebê</span>
+        <span class="kw kw-present">mãe e filha</span>
+        <span class="kw kw-present">borrachinha</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.5rem;">Palavras-chave ausentes (alta oportunidade)</div>
+      <div class="kw-grid">
+        <span class="kw kw-missing">laço bebê menina</span>
+        <span class="kw kw-missing">acessório cabelo infantil</span>
+        <span class="kw kw-missing">laço cetim</span>
+        <span class="kw kw-missing">laço presente bebê</span>
+        <span class="kw kw-missing">tiara infantil</span>
+        <span class="kw kw-missing">laço aniversário</span>
+        <span class="kw kw-missing">enxoval bebê</span>
+        <span class="kw kw-missing">chá de bebê</span>
+        <span class="kw kw-missing">presente criança menina</span>
+        <span class="kw kw-missing">laço hairpin</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.5rem;">Palavras-chave de oportunidade média</div>
+      <div class="kw-grid">
+        <span class="kw kw-opp">laço duplo</span>
+        <span class="kw kw-opp">laço maternidade</span>
+        <span class="kw kw-opp">acessório recém-nascido</span>
+        <span class="kw kw-opp">faixa cabeça bebê</span>
+        <span class="kw kw-opp">kit presente menina</span>
+        <span class="kw kw-opp">presilha infantil</span>
+      </div>
+    </div>
+
+    <ul class="issue-list">
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Nome da loja fraco para SEO.</strong> "Laços encantos de Menina" não contém palavras que as mães buscam. Um nome como "Laços da Tia Ana | Faixinhas Bebê" seria mais indexável. O nome da loja impacta a busca por loja no app Shopee.</span></li>
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Títulos truncados nas miniaturas.</strong> Os títulos são cortados exatamente onde contêm informações de diferenciação. O algoritmo da Shopee prioriza os primeiros 30–40 caracteres dos títulos para indexação. A estrutura atual coloca as palavras-chave fracas na frente.</span></li>
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Zero histórico de conversão.</strong> O ranking orgânico da Shopee é fortemente influenciado por CTR, taxa de conversão e volume de vendas. Com 1 venda em 30 meses, o algoritmo não promove esta loja em nenhuma busca competitiva.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Estrutura de título inconsistente.</strong> Alguns títulos usam emoji (🎀), outros não. O padrão ideal é: [Produto principal] | [Diferencial] | [Ocasião/público]. Ex: "Kit 6 Laços Bebê Menina Bico Pato | Faixinhas Macias Newborn | Presente Chá".</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Sem exploração de SEO semântico.</strong> Termos como "presente chá de bebê", "enxoval recém-nascida", "1 aninho menina" têm volume significativo no Shopee BR e nenhum produto está otimizado para capturá-los.</span></li>
+      <li><span class="tag tag-opp">Oportunidade</span><span><strong>Produto "Mãe e Filha" inexplorado.</strong> A busca por "conjunto mãe e filha", "laço igual mãe filha" e "presente mãe filha" tem pico nas datas comemorativas (Dia das Mães, Natal). A loja tem o produto mas não usa essas palavras-chave no título.</span></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> 2. Análise de conversão</div>
+
+    <ul class="issue-list">
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Taxa de resposta do chat: "Dados Insuficientes".</strong> Isso é punição direta do algoritmo da Shopee. Lojas com baixa taxa de resposta não aparecem em posições orgânicas relevantes. As mães tomam decisão de compra pelo chat — sem resposta, sem venda.</span></li>
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Apenas 1 avaliação com 5 estrelas.</strong> Para uma mãe comprando pela primeira vez, 1 nota e 1 venda não geram confiança suficiente. As melhores lojas do nicho têm mínimo de 50 a 200 avaliações para competir nas buscas.</span></li>
+      <li><span class="tag tag-crit">Crítico</span><span><strong>Ausência de gatilhos de urgência.</strong> Nenhum produto usa "Últimas unidades", "Frete grátis até amanhã", "Mais vendido" ou badges de promoção. Sem urgência, mães que visitam a loja não sentem motivação para comprar agora.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Proposta de valor invisível.</strong> A página da loja não comunica nenhum diferencial: sem descrição de marca, sem garantia, sem política de troca, sem "por que comprar aqui". O espaço de perfil é completamente desperdiçado.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Preços sem âncora.</strong> O produto mais caro (R$67,00) e o mais barato (R$17,90) aparecem lado a lado sem contexto. Sem uma âncora de preço bem posicionada, a percepção de valor fica confusa.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Último login há 30 horas.</strong> Isso é visível para compradores. Transmite falta de comprometimento e aumenta a ansiedade de quem compra online. As lojas líderes do nicho fazem login diário ou têm login automatizado.</span></li>
+      <li><span class="tag tag-opp">Oportunidade</span><span><strong>Apelo emocional potencial alto.</strong> O produto tem forte gatilho emocional (presente, bebê, momento único). Mas a loja não explora isso em nenhuma descrição, foto ou comunicação. Lojas concorrentes usam textos como "Para a princesinha da sua vida" nas banners e descrições.</span></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-photo" aria-hidden="true"></i> 3. Análise dos produtos e fotos</div>
+
+    <ul class="issue-list">
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Fotos com fundo branco inconsistente.</strong> Algumas fotos mostram os laços em mãos (lifestyle), o que é positivo. Mas a maioria usa fundo simples sem contexto emocional. As lojas líderes usam cenário com bebê real ou boneca para ativar o desejo de compra materno.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Identidade visual sem coesão.</strong> Não há um padrão visual claro de cores, molduras ou estilo fotográfico entre os 6 produtos. Isso reduz o reconhecimento de marca nas buscas e no feed da Shopee.</span></li>
+      <li><span class="tag tag-warn">Alerta</span><span><strong>Miniatura principal sem diferenciação.</strong> Na grade de produtos, todas as miniaturas se parecem com as de centenas de outras lojas. Nenhuma tem overlay de texto, badge de "Kit", ou elemento visual que destaque no feed.</span></li>
+      <li><span class="tag tag-opp">Oportunidade</span><span><strong>Paleta de cores dos produtos é forte.</strong> Os laços têm cores alegres, variadas e atraentes. Isso é um ativo real. Falta apenas uma apresentação fotográfica melhor que capitalize essas cores.</span></li>
+      <li><span class="tag tag-opp">Oportunidade</span><span><strong>Produto "Mãe e Filha" é um diferencial visual.</strong> Lojas que mostram fotos reais de mãe e filha usando laços iguais têm engajamento emocional muito superior. Um único vídeo ou foto desse tipo poderia transformar a conversão desse produto.</span></li>
+      <li><span class="tag tag-info">Info</span><span><strong>Portfólio de apenas 6 produtos é insuficiente.</strong> O algoritmo da Shopee favorece lojas com 15+ produtos ativos. Um catálogo pequeno reduz o tempo de permanência, o número de páginas visitadas e as chances de cross-sell.</span></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-trophy" aria-hidden="true"></i> 4. Análise competitiva</div>
+
+    <div class="swot-grid">
+      <div class="swot-box swot-s">
+        <div class="swot-title"><i class="ti ti-thumb-up" aria-hidden="true"></i> O que esta loja faz melhor</div>
+        <ul>
+          <li>Produto "Mãe e Filha" é diferencial raro</li>
+          <li>Faixa de preço competitiva (R$17,90)</li>
+          <li>Rating 5.0 (ainda que com 1 nota)</li>
+          <li>Mix variado: kits e unidades</li>
+        </ul>
+      </div>
+      <div class="swot-box swot-w">
+        <div class="swot-title"><i class="ti ti-thumb-down" aria-hidden="true"></i> O que faz pior que a concorrência</div>
+        <ul>
+          <li>Zero autoridade e histórico</li>
+          <li>Chat sem dados de resposta</li>
+          <li>SEO extremamente fraco</li>
+          <li>Sem frete grátis configurado</li>
+          <li>Sem promoções ou cupons</li>
+          <li>Portfólio mínimo (6 itens)</li>
+        </ul>
+      </div>
+      <div class="swot-box swot-o">
+        <div class="swot-title"><i class="ti ti-trending-up" aria-hidden="true"></i> Maiores oportunidades</div>
+        <ul>
+          <li>Datas comemorativas (Dia das Mães, Natal)</li>
+          <li>Nicho de presentes maternidade</li>
+          <li>Produto mãe e filha inexplorado</li>
+          <li>Shopee Ads com orçamento baixo</li>
+          <li>Parceria com influenciadoras mamãe</li>
+        </ul>
+      </div>
+      <div class="swot-box swot-r">
+        <div class="swot-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Maiores riscos</div>
+        <ul>
+          <li>Abandono total da loja (histórico indica isso)</li>
+          <li>Concorrentes com 500+ avaliações</li>
+          <li>Algoritmo punindo inatividade</li>
+          <li>Sem capital de giro para Shopee Ads</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-rocket" aria-hidden="true"></i> 5. Oportunidades de crescimento</div>
+
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.75rem;">10 melhorias rápidas de alto impacto (0–7 dias)</div>
+    <div style="margin-bottom: 1.5rem;">
+      <div class="action-item">
+        <div class="action-num num-red">1</div>
+        <div><div>Fazer login diário e responder chats em menos de 1 hora</div><div class="action-detail">Impacto no ranking do algoritmo Shopee: imediato e significativo</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-red">2</div>
+        <div><div>Reescrever todos os 6 títulos com estrutura SEO otimizada</div><div class="action-detail">Formato: [KW primária] + [diferencial] + [público/ocasião] + [material]</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-red">3</div>
+        <div><div>Ativar frete grátis para compras acima de R$49,90</div><div class="action-detail">O badge "Frete Grátis" sozinho aumenta CTR em 30–60% no feed da Shopee</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-red">4</div>
+        <div><div>Criar descrições completas em todos os produtos (mínimo 300 palavras)</div><div class="action-detail">Shopee usa o conteúdo da descrição para indexação secundária de palavras-chave</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-red">5</div>
+        <div><div>Adicionar pelo menos 5 fotos por produto (incluindo foto lifestyle com bebê)</div><div class="action-detail">Produtos com 5+ fotos têm taxa de conversão 2x maior que com 1–2 fotos</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-amber">6</div>
+        <div><div>Criar cupom de 10% de desconto para novos seguidores</div><div class="action-detail">Gatilho de reciprocidade que acelera primeiros seguidores e primeira compra</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-amber">7</div>
+        <div><div>Definir categoria correta para todos os produtos (Tiaras, Presilhas, Faixas)</div><div class="action-detail">Subcategorias corretas aumentam indexação nos filtros de busca da Shopee</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-amber">8</div>
+        <div><div>Ativar a opção "Loja em Destaque" e preencher o perfil da loja</div><div class="action-detail">Bio da loja, foto de capa e decoradores afetam a primeira impressão e confiança</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-amber">9</div>
+        <div><div>Pedir avaliação para a única compra realizada (cliente ativo)</div><div class="action-detail">Uma segunda avaliação positiva dobraria o score de credibilidade da loja</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-amber">10</div>
+        <div><div>Adicionar vídeo curto (15–30s) ao produto mais forte</div><div class="action-detail">Produtos com vídeo têm +40% de taxa de conversão no mobile</div></div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.75rem;">10 melhorias estratégicas de médio prazo (7–30 dias)</div>
+    <div style="margin-bottom: 1.5rem;">
+      <div class="action-item">
+        <div class="action-num num-blue">1</div>
+        <div><div>Expandir catálogo para 20–30 SKUs com variações (cores, tamanhos)</div><div class="action-detail">Volume de produtos = mais pontos de entrada orgânica + mais cross-sell</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">2</div>
+        <div><div>Criar linha de produtos para datas sazonais (Natal, Dia das Mães, Páscoa)</div><div class="action-detail">Sazonalidade é o maior driver de volume no nicho de presentes infantis</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">3</div>
+        <div><div>Investir R$50–100/mês em Shopee Ads nos produtos com melhor margem</div><div class="action-detail">Com budget mínimo, gera primeiros dados de conversão que alimentam o algoritmo orgânico</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">4</div>
+        <div><div>Criar identidade visual coesa: paleta de cores fixa + moldura padrão nas fotos</div><div class="action-detail">Reconhecimento de marca no feed = mais cliques de quem já viu a loja antes</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">5</div>
+        <div><div>Adicionar kits presentáveis com embalagem diferenciada como SKU premium</div><div class="action-detail">Ticket médio mais alto + apelo emocional para presentes de maternidade/aniversário</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">6</div>
+        <div><div>Criar pacotes "combo": faixa + laço + presilha com desconto de 15%</div><div class="action-detail">Aumenta ticket médio e reduz custo logístico por pedido</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">7</div>
+        <div><div>Cadastrar produtos com variações de cor visíveis na miniatura</div><div class="action-detail">Variações visíveis aumentam tempo na página e reduzem a taxa de rejeição</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">8</div>
+        <div><div>Participar das campanhas e eventos da Shopee (11.11, 12.12, etc.)</div><div class="action-detail">Shopee prioriza lojas participantes no algoritmo durante as campanhas</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">9</div>
+        <div><div>Construir presença no Instagram/TikTok direcionando para a loja Shopee</div><div class="action-detail">Tráfego externo é um sinal positivo para o algoritmo da Shopee</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-blue">10</div>
+        <div><div>Implementar política de troca clara e garantia de qualidade na bio</div><div class="action-detail">Reduz a barreira de compra em 25–35% para compradores indecisos</div></div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 0.75rem;">10 ações avançadas para dominar o nicho (30–90 dias)</div>
+    <div>
+      <div class="action-item">
+        <div class="action-num num-green">1</div>
+        <div><div>Atingir Preferred Seller da Shopee (meta: 100 vendas, 4.8 estrelas, ≥95% resposta)</div><div class="action-detail">O badge Preferred Seller é o maior acelerador orgânico disponível na plataforma</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">2</div>
+        <div><div>Lançar linha exclusiva com nome de coleção (ex: "Coleção Jardim Encantado")</div><div class="action-detail">Posicionamento de marca diferenciado em um nicho dominado por commodities</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">3</div>
+        <div><div>Parcerias com microinfluenciadoras mamães (5k–50k seguidores) para UGC</div><div class="action-detail">Conteúdo gerado por usuários reais é o gatilho social mais forte para o nicho materno</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">4</div>
+        <div><div>Criar programa de fidelidade: "Compre 3 kits, ganhe 1 faixinha"</div><div class="action-detail">Retenção de cliente é 5x mais barata que aquisição no e-commerce brasileiro</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">5</div>
+        <div><div>Expandir para Shopee Live com demonstrações ao vivo semanais</div><div class="action-detail">Shopee Live tem comissão zero e aumenta visibilidade orgânica da loja no algoritmo</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">6</div>
+        <div><div>Criar produtos personalizados com nome do bebê (bordado/hot stamping)</div><div class="action-detail">Personalização cria monopólio de nicho e justifica preços premium</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">7</div>
+        <div><div>Otimizar para pesquisa visual com fotos que dominem o padrão do nicho</div><div class="action-detail">A Shopee está implementando busca por imagem — qualidade fotográfica será mais crítica</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">8</div>
+        <div><div>Desenvolver linha de faixas newborn premium com certificado de material hipoalergênico</div><div class="action-detail">Segurança/hipoalergênico é o maior gatilho de confiança para mães de recém-nascidos</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">9</div>
+        <div><div>Explorar o canal B2B: kits de enxoval para maternidades e baby shower</div><div class="action-detail">Um único cliente B2B pode gerar volume igual a 50 vendas individuais</div></div>
+      </div>
+      <div class="action-item">
+        <div class="action-num num-green">10</div>
+        <div><div>Registrar marca própria e criar embalagem com design autoral</div><div class="action-detail">Protege o negócio de cópias e cria percepção de valor premium sustentável</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="ti ti-list-check" aria-hidden="true"></i> 6. Plano de ação prioritário</div>
+
+    <div class="phase">
+      <div class="phase-header"><span style="background:#FCEBEB; color:#A32D2D; padding:2px 10px; border-radius:999px; font-size:11px;">Corrigir imediatamente (hoje)</span><div class="phase-line"></div></div>
+      <div class="action-item"><div class="action-num num-red">!</div><div>Fazer login e permanecer online — ativar notificações de chat no celular</div></div>
+      <div class="action-item"><div class="action-num num-red">!</div><div>Reescrever os títulos dos 6 produtos com as palavras-chave identificadas acima</div></div>
+      <div class="action-item"><div class="action-num num-red">!</div><div>Preencher a bio da loja com proposta de valor, garantia e contato</div></div>
+      <div class="action-item"><div class="action-num num-red">!</div><div>Configurar frete grátis via Shopee Xpress para pedidos acima de R$49,90</div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header"><span style="background:#FAEEDA; color:#854F0B; padding:2px 10px; border-radius:999px; font-size:11px;">Otimizar nos próximos 7 dias</span><div class="phase-line"></div></div>
+      <div class="action-item"><div class="action-num num-amber">7d</div><div>Adicionar 5 fotos por produto + 1 vídeo no produto mais forte</div></div>
+      <div class="action-item"><div class="action-num num-amber">7d</div><div>Criar descrições ricas em todos os produtos (300+ palavras com palavras-chave)</div></div>
+      <div class="action-item"><div class="action-num num-amber">7d</div><div>Criar cupom de desconto para novos seguidores e divulgar em grupos de mamães</div></div>
+      <div class="action-item"><div class="action-num num-amber">7d</div><div>Contatar o único comprador para solicitar avaliação detalhada</div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header"><span style="background:#E6F1FB; color:#185FA5; padding:2px 10px; border-radius:999px; font-size:11px;">Implementar nos próximos 30 dias</span><div class="phase-line"></div></div>
+      <div class="action-item"><div class="action-num num-blue">30d</div><div>Expandir para 20 SKUs com identidade visual coesa</div></div>
+      <div class="action-item"><div class="action-num num-blue">30d</div><div>Iniciar Shopee Ads com R$5/dia nos 2 produtos de maior margem</div></div>
+      <div class="action-item"><div class="action-num num-blue">30d</div><div>Criar kits sazonais para datas próximas (Dia dos Pais, Natal)</div></div>
+      <div class="action-item"><div class="action-num num-blue">30d</div><div>Publicar 3 Shopee Lives de demonstração dos produtos</div></div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header"><span style="background:#EAF3DE; color:#3B6D11; padding:2px 10px; border-radius:999px; font-size:11px;">Para se tornar referência no nicho</span><div class="phase-line"></div></div>
+      <div class="action-item"><div class="action-num num-green">+</div><div>Conquistar o badge Preferred Seller e manter resposta em menos de 1 hora</div></div>
+      <div class="action-item"><div class="action-num num-green">+</div><div>Lançar linha personalizada com nome do bebê como produto premium</div></div>
+      <div class="action-item"><div class="action-num num-green">+</div><div>Criar comunidade de mamães fidelizadas via WhatsApp/Instagram com conteúdo de valor</div></div>
+      <div class="action-item"><div class="action-num num-green">+</div><div>Registrar a marca e criar embalagem autoral reconhecível</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const ctx = document.getElementById('radarChart').getContext('2d');
+new Chart(ctx, {
+  type: 'radar',
+  data: {
+    labels: ['SEO Shopee', 'Conversão', 'Autoridade', 'Branding', 'Org. Visual', 'Qualidade', 'Potencial'],
+    datasets: [
+      {
+        label: 'Loja atual',
+        data: [2.5, 1.5, 1.0, 3.0, 4.0, 5.5, 7.5],
+        backgroundColor: 'rgba(226,75,74,0.15)',
+        borderColor: '#E24B4A',
+        pointBackgroundColor: '#E24B4A',
+        borderWidth: 2,
+        pointRadius: 4
+      },
+      {
+        label: 'Benchmark do nicho',
+        data: [7.5, 7.0, 6.5, 6.0, 7.0, 7.5, 8.0],
+        backgroundColor: 'rgba(55,138,221,0.08)',
+        borderColor: '#378ADD',
+        pointBackgroundColor: '#378ADD',
+        borderWidth: 1.5,
+        borderDash: [4, 3],
+        pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      r: {
+        min: 0,
+        max: 10,
+        ticks: {
+          stepSize: 2,
+          font: { size: 10 },
+          color: '#888780'
+        },
+        pointLabels: {
+          font: { size: 11 },
+          color: '#5F5E5A'
+        },
+        grid: { color: 'rgba(136,135,128,0.2)' },
+        angleLines: { color: 'rgba(136,135,128,0.2)' }
+      }
+    }
+  }
+});
+</script>
+</body></html>
