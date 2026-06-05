@@ -114,19 +114,26 @@
             const [copied, setCopied] = useState(false);
 
             const handleCopy = () => {
-                // Lógica de cópia compatível
-                const textArea = document.createElement("textarea");
-                textArea.value = content;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
-                } catch (err) {
-                    console.error('Falha ao copiar', err);
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(content).then(() => {
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                    }).catch(err => console.error('Erro Clipboard API', err));
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = content;
+                    textArea.style.position = "fixed"; // Evita scroll ao focar no mobile
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                    } catch (err) {
+                        console.error('Falha ao copiar', err);
+                    }
+                    document.body.removeChild(textArea);
                 }
-                document.body.removeChild(textArea);
             };
 
             return (
