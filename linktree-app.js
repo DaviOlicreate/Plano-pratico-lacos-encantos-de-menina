@@ -74,4 +74,8 @@ onSnapshot(q, (snapshot) => {
     });
 
     if(linksContainer) linksContainer.innerHTML = htmlContent;
+}, (error) => {
+    console.error("Erro no Firebase:", error);
+    if(fallbackLinks) fallbackLinks.classList.remove('hidden');
+    if(linksContainer) linksContainer.innerHTML = '';
 });

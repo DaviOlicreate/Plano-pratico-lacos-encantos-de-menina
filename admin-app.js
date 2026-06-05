@@ -100,6 +100,11 @@ function loadLinks() {
         });
 
         renderLinks();
+    }, (error) => {
+        console.error("Erro no Firebase:", error);
+        loadingState.classList.add('hidden');
+        emptyState.innerHTML = `<span class="text-red-500">Erro de Permissão:</span><br>Vá no Firebase Console > Firestore Database > Rules, e altere para:<br><code class="bg-gray-100 p-2 block mt-2 text-xs text-left">rules_version = '2';<br>service cloud.firestore {<br>&nbsp;&nbsp;match /databases/{database}/documents {<br>&nbsp;&nbsp;&nbsp;&nbsp;match /{document=**} {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow write: if request.auth != null;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>`;
+        emptyState.classList.remove('hidden');
     });
 }
 
