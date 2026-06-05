@@ -165,20 +165,27 @@ const imageFile = document.getElementById('link-image-file');
 const imagePreviewBox = document.getElementById('image-preview-box');
 const galleryUploadContainer = document.getElementById('gallery-upload-container');
 const galleryFiles = document.getElementById('link-gallery-files');
-const galleryPreviewGrid = document.getElementById('gallery-preview-grid');
+const galleryItemsList = document.getElementById('gallery-items-list');
+const actionTypeContainer = document.getElementById('action-type-container');
 
 let currentImageBase64 = null;
-let currentGalleryBase64 = [];
+let currentGalleryItems = [];
 
 function updateModalFieldsVisibility() {
     const action = actionTypeSelect.value;
     const style = visualStyleSelect.value;
     
-    // Controlar visibilidade da URL
-    if (action === 'url') {
-        urlContainer.classList.remove('hidden');
-    } else {
+    // Controlar visibilidade da URL e Ação baseado no estilo
+    if (style === 'image-gallery') {
         urlContainer.classList.add('hidden');
+        actionTypeContainer.classList.add('hidden');
+    } else {
+        actionTypeContainer.classList.remove('hidden');
+        if (action === 'url') {
+            urlContainer.classList.remove('hidden');
+        } else {
+            urlContainer.classList.add('hidden');
+        }
     }
     
     // Controlar visibilidade de Icone vs Imagem
@@ -234,16 +241,14 @@ imageFile.addEventListener('change', (e) => {
     };
 });
 
-// Lógica para Múltiplas Imagens (Galeria)
+// Lógica para Múltiplas Imagens (Catálogo Interativo)
 galleryFiles.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files).slice(0, 15); // Máximo 15 imagens
     if (files.length === 0) return;
     
     // Mostra loading no botão de salvar para evitar salvar antes de comprimir
     document.getElementById('btn-save-link').disabled = true;
-    galleryPreviewGrid.innerHTML = '<p class="col-span-4 text-sm text-gray-500">Comprimindo imagens...</p>';
-    
-    currentGalleryBase64 = [];
+    galleryItemsList.innerHTML = '<p class="text-sm text-gray-500">Comprimindo imagens e montando lista...</p>';
     
     for (let file of files) {
         await new Promise((resolve) => {
@@ -254,7 +259,7 @@ galleryFiles.addEventListener('change', async (e) => {
                 img.src = event.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // Um pouco maior para galerias
+                    const MAX_WIDTH = 400; // Compressão pesada para caber no limite
                     let width = img.width;
                     let height = img.height;
                     
@@ -268,23 +273,51 @@ galleryFiles.addEventListener('change', async (e) => {
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    currentGalleryBase64.push(canvas.toDataURL('image/jpeg', 0.8));
+                    currentGalleryItems.push({
+                        imageBase64: canvas.toDataURL('image/jpeg', 0.6), // Qualidade 60%
+                        title: '',
+                        url: ''
+                    });
                     resolve();
                 };
             };
         });
     }
     
-    renderGalleryPreview();
+    renderGalleryItemsList();
     document.getElementById('btn-save-link').disabled = false;
 });
 
-function renderGalleryPreview() {
-    galleryPreviewGrid.innerHTML = '';
-    currentGalleryBase64.forEach((base64) => {
-        galleryPreviewGrid.innerHTML += `
-            <div class="aspect-square rounded-lg overflow-hidden border border-gray-200">
-                <img src="${base64}" class="w-full h-full object-cover">
+window.updateGalleryItem = function(index, field, value) {
+    if (currentGalleryItems[index]) {
+        currentGalleryItems[index][field] = value;
+    }
+};
+
+window.removeGalleryItem = function(index) {
+    currentGalleryItems.splice(index, 1);
+    renderGalleryItemsList();
+};
+
+function renderGalleryItemsList() {
+    galleryItemsList.innerHTML = '';
+    if (currentGalleryItems.length === 0) {
+        return;
+    }
+    
+    currentGalleryItems.forEach((item, index) => {
+        galleryItemsList.innerHTML += `
+            <div class="flex gap-3 bg-gray-50 p-2 rounded-xl border border-gray-100 relative group">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200">
+                    <img src="${item.imageBase64}" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1 flex flex-col gap-1.5 justify-center pr-6">
+                    <input type="text" placeholder="Título (ex: Laço Inverno)" value="${item.title}" oninput="window.updateGalleryItem(${index}, 'title', this.value)" class="w-full text-sm px-2.5 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-500">
+                    <input type="url" placeholder="Link da foto (ex: WhatsApp)" value="${item.url}" oninput="window.updateGalleryItem(${index}, 'url', this.value)" class="w-full text-xs px-2.5 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="button" onclick="window.removeGalleryItem(${index})" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity" title="Remover foto">
+                    <i class="ph-bold ph-x text-xs"></i>
+                </button>
             </div>
         `;
     });
@@ -312,8 +345,8 @@ function openModal(link = null) {
             imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
         }
         
-        currentGalleryBase64 = link.galleryBase64 || [];
-        renderGalleryPreview();
+        currentGalleryItems = link.galleryItems || [];
+        renderGalleryItemsList();
         
         updateIconPreview();
     } else {
@@ -325,8 +358,8 @@ function openModal(link = null) {
         visualStyleSelect.value = 'standard';
         currentImageBase64 = null;
         imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
-        currentGalleryBase64 = [];
-        renderGalleryPreview();
+        currentGalleryItems = [];
+        renderGalleryItemsList();
         updateIconPreview();
     }
     
@@ -414,7 +447,7 @@ linkForm.addEventListener('submit', async (e) => {
         actionType: action,
         style: style,
         imageBase64: style === 'image-card' ? currentImageBase64 : null,
-        galleryBase64: style === 'image-gallery' ? currentGalleryBase64 : null
+        galleryItems: style === 'image-gallery' ? currentGalleryItems : null
     };
 
     try {

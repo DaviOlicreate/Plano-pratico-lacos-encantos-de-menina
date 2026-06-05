@@ -14,14 +14,26 @@ let allLinksData = [];
 
 window.openDynamicGallery = function(linkId) {
     const link = allLinksData.find(l => l.id === linkId);
-    if(!link || !link.galleryBase64 || link.galleryBase64.length === 0) return;
+    if(!link || !link.galleryItems || link.galleryItems.length === 0) return;
     
     document.getElementById('dynamic-gallery-title').innerText = link.title;
     
     const grid = document.getElementById('dynamic-gallery-grid');
     grid.innerHTML = '';
-    link.galleryBase64.forEach(base64 => {
-        grid.innerHTML += `<img src="${base64}" class="w-full h-auto rounded-xl object-cover shadow-sm aspect-[4/5] border border-gray-100">`;
+    link.galleryItems.forEach(item => {
+        const href = item.url ? `href="${item.url}" target="_blank"` : `href="#" onclick="event.preventDefault()"`;
+        const titleHtml = item.title ? `
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8">
+                <p class="text-white text-xs font-bold truncate">${item.title}</p>
+            </div>
+        ` : '';
+        
+        grid.innerHTML += `
+            <a ${href} class="block relative rounded-xl overflow-hidden shadow-sm aspect-[4/5] border border-gray-100 group hover:shadow-md transition-shadow">
+                <img src="${item.imageBase64}" class="w-full h-full object-cover">
+                ${titleHtml}
+            </a>
+        `;
     });
     
     const modal = document.getElementById('modal-dynamic-gallery');

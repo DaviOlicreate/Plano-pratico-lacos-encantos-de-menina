@@ -153,7 +153,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
+                    <div id="action-type-container">
                         <label class="block text-sm font-bold text-gray-700 mb-1">O que este botão faz?</label>
                         <select id="link-action-type" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
                             <option value="url">Abre um Link de site</option>
@@ -169,7 +169,7 @@
                             <option value="shopee">Estilo Shopee</option>
                             <option value="whatsapp">Estilo WhatsApp</option>
                             <option value="image-card">Card Único com Foto</option>
-                            <option value="image-gallery">Galeria (Múltiplas Fotos em Janela)</option>
+                            <option value="image-gallery">Galeria (Catálogo Interativo)</option>
                         </select>
                     </div>
                 </div>
@@ -204,11 +204,11 @@
                 </div>
 
                 <div id="gallery-upload-container" class="hidden">
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Fotos da Galeria (Máx 15)</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Fotos do Catálogo (Máx 15)</label>
                     <div class="flex flex-col gap-3">
                         <input type="file" id="link-gallery-files" multiple accept="image/jpeg, image/png, image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100">
-                        <div id="gallery-preview-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-2"></div>
-                        <p class="text-xs text-gray-400">Você pode selecionar várias fotos de uma vez. Elas serão comprimidas e exibidas em grade.</p>
+                        <div id="gallery-items-list" class="flex flex-col gap-3 mt-2 max-h-64 overflow-y-auto pr-1"></div>
+                        <p class="text-xs text-gray-400">Selecione as fotos. Adicione os links individualmente na lista acima.</p>
                     </div>
                 </div>
                 
