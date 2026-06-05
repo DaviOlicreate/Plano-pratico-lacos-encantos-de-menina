@@ -23,8 +23,8 @@ window.openDynamicGallery = function(linkId) {
     link.galleryItems.forEach(item => {
         const href = item.url ? `href="${item.url}" target="_blank"` : `href="#" onclick="event.preventDefault()"`;
         const titleHtml = item.title ? `
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8">
-                <p class="text-white text-xs font-bold truncate">${item.title}</p>
+            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3 pt-12">
+                <p class="text-white text-sm font-bold leading-snug break-words">${item.title}</p>
             </div>
         ` : '';
         
