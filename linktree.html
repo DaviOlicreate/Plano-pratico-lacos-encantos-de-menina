@@ -359,6 +359,18 @@
                     <div class="w-10 flex justify-center"><i class="ph ph-caret-right text-gray-400 group-hover:text-brand-500 transition-colors"></i></div>
                 </a>
 
+                <!-- Feedbacks -->
+                <a href="#" onclick="openFeedbackModal(event)" class="btn-secondary rounded-2xl p-4 flex items-center justify-between group">
+                    <div class="icon-circle bg-brand-50 text-brand-500 border border-brand-100 group-hover:scale-110 transition-transform">
+                        <i class="ph ph-chat-centered-text text-xl"></i>
+                    </div>
+                    <div class="flex-1 text-center">
+                        <p class="font-bold text-gray-800 leading-tight">O que as clientes dizem</p>
+                        <p class="text-xs text-gray-500 font-medium">Avaliações de mamães reais</p>
+                    </div>
+                    <div class="w-10 flex justify-center"><i class="ph ph-caret-right text-gray-400 group-hover:text-brand-500 transition-colors"></i></div>
+                </a>
+
             </div>
         </div>
 
@@ -415,9 +427,10 @@
     </main>
 
     <!-- Modal Localização -->
-    <div class="modal-backdrop" id="modalBackdrop" onclick="closeLocationModal()"></div>
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModals()"></div>
+    
     <div class="modal-content" id="locationModal">
-        <div class="modal-handle md:hidden" onclick="closeLocationModal()"></div>
+        <div class="modal-handle md:hidden" onclick="closeModals()"></div>
         
         <div class="text-center mb-4">
             <h2 class="text-xl font-bold text-gray-800">Localização da Loja</h2>
@@ -438,8 +451,56 @@
             <button onclick="navigator.share ? navigator.share({title: 'Laços Encantos de Menina', url: 'https://maps.google.com/?q=Rua+Joaquim+Pantaleão+sobrinho,+1528+-+Dona+Maruca,+Conceição+das+Alagoas+-+MG,+38120-000'}) : alert('Função de compartilhar não suportada neste navegador.')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
                 <i class="ph ph-share-network text-xl"></i>
             </button>
-            <button onclick="closeLocationModal()" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button onclick="closeModals()" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
                 <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Feedbacks -->
+    <div class="modal-content" id="feedbackModal">
+        <div class="modal-handle md:hidden" onclick="closeModals()"></div>
+        
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-500 mb-3">
+                <i class="ph-fill ph-star text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800">Avaliações das Mamães</h2>
+            <p class="text-xs text-gray-500 mt-1">Veja o que dizem sobre nossos laços!</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto pr-2 pb-4 space-y-4 max-h-[50vh]">
+            <!-- Review 1 -->
+            <div class="bg-brand-50 rounded-2xl p-4 border border-brand-100">
+                <div class="flex items-center gap-1 text-brand-400 mb-2 text-sm">
+                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                </div>
+                <p class="text-gray-700 text-sm font-medium mb-2">"Os laços são simplesmente perfeitos! O acabamento é impecável e minha filha não tira da cabeça. Chegou super rápido e muito bem embalado."</p>
+                <p class="text-xs text-gray-500 font-bold">— Mamãe Ana</p>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="bg-brand-50 rounded-2xl p-4 border border-brand-100">
+                <div class="flex items-center gap-1 text-brand-400 mb-2 text-sm">
+                    <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                </div>
+                <p class="text-gray-700 text-sm font-medium mb-2">"Amei a qualidade, não machuca a cabecinha da bebê. Com certeza vou comprar mais vezes, o atendimento vip no WhatsApp foi excelente!"</p>
+                <p class="text-xs text-gray-500 font-bold">— Mamãe Júlia</p>
+            </div>
+            
+            <!-- CTA -->
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-500 mb-3">Temos milhares de avaliações em nossas redes!</p>
+                <a href="https://www.instagram.com/lacosencantosdemenina/" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-brand-500 hover:text-brand-600">
+                    <i class="ph ph-instagram-logo text-lg"></i>
+                    Ver mais no Instagram
+                </a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 mt-2">
+            <button onclick="closeModals()" class="w-full bg-gray-100 text-gray-800 font-bold text-center py-3.5 rounded-full hover:bg-gray-200 transition-colors">
+                Fechar
             </button>
         </div>
     </div>
@@ -449,12 +510,20 @@
             e.preventDefault();
             document.getElementById('modalBackdrop').classList.add('show');
             document.getElementById('locationModal').classList.add('show');
-            document.body.style.overflow = 'hidden'; // Evita rolagem do fundo
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeLocationModal() {
+        function openFeedbackModal(e) {
+            e.preventDefault();
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.getElementById('feedbackModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModals() {
             document.getElementById('modalBackdrop').classList.remove('show');
             document.getElementById('locationModal').classList.remove('show');
+            document.getElementById('feedbackModal').classList.remove('show');
             document.body.style.overflow = '';
         }
     </script>
