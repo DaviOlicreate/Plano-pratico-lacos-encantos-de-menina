@@ -312,7 +312,7 @@ function renderGalleryItemsList() {
                     <img src="${item.imageBase64}" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1 flex flex-col gap-1.5 justify-center pr-6">
-                    <input type="text" placeholder="Título (ex: Laço Inverno)" value="${item.title}" oninput="window.updateGalleryItem(${index}, 'title', this.value)" class="w-full text-sm px-2.5 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-500">
+                    <textarea rows="2" placeholder="Título (ex: Laço Inverno)" oninput="window.updateGalleryItem(${index}, 'title', this.value)" class="w-full text-sm px-2.5 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-500 resize-none">${item.title}</textarea>
                     <input type="url" placeholder="Link da foto (ex: WhatsApp)" value="${item.url}" oninput="window.updateGalleryItem(${index}, 'url', this.value)" class="w-full text-xs px-2.5 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-500">
                 </div>
                 <button type="button" onclick="window.removeGalleryItem(${index})" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity" title="Remover foto">
