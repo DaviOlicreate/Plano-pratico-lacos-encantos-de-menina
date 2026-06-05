@@ -118,11 +118,15 @@ function renderLinks() {
         
         const isFirst = index === 0;
         const isLast = index === currentLinks.length - 1;
+        const isImage = link.style === 'image-card' && link.imageBase64;
+        const iconContent = isImage 
+            ? `<img src="${link.imageBase64}" class="w-full h-full object-cover rounded-xl">` 
+            : `<i class="ph ${link.icon || 'ph-link'} text-2xl"></i>`;
 
         div.innerHTML = `
             <div class="flex items-center gap-4 flex-1 overflow-hidden">
-                <div class="w-12 h-12 rounded-lg ${link.highlight ? 'bg-brand-50 text-brand-500 border border-brand-100' : 'bg-gray-50 text-gray-500 border border-gray-100'} flex items-center justify-center flex-shrink-0">
-                    <i class="ph-fill ${link.icon} text-2xl"></i>
+                <div class="w-12 h-12 rounded-xl ${isImage ? '' : 'bg-gray-50'} flex items-center justify-center flex-shrink-0 text-gray-500 border border-gray-100">
+                    ${iconContent}
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="font-bold text-gray-800 truncate">${link.title}</p>
@@ -151,27 +155,113 @@ function renderLinks() {
     });
 }
 
-// Modal Logic
+// Selectors extras do Modal
+const actionTypeSelect = document.getElementById('link-action-type');
+const visualStyleSelect = document.getElementById('link-visual-style');
+const urlContainer = document.getElementById('url-container');
+const iconContainer = document.getElementById('icon-container');
+const imageUploadContainer = document.getElementById('image-upload-container');
+const imageFile = document.getElementById('link-image-file');
+const imagePreviewBox = document.getElementById('image-preview-box');
+
+let currentImageBase64 = null;
+
+function updateModalFieldsVisibility() {
+    const action = actionTypeSelect.value;
+    const style = visualStyleSelect.value;
+    
+    // Controlar visibilidade da URL
+    if (action === 'url') {
+        urlContainer.classList.remove('hidden');
+    } else {
+        urlContainer.classList.add('hidden');
+    }
+    
+    // Controlar visibilidade de Icone vs Imagem
+    if (style === 'image-card') {
+        iconContainer.classList.add('hidden');
+        imageUploadContainer.classList.remove('hidden');
+    } else {
+        iconContainer.classList.remove('hidden');
+        imageUploadContainer.classList.add('hidden');
+    }
+}
+
+actionTypeSelect.addEventListener('change', updateModalFieldsVisibility);
+visualStyleSelect.addEventListener('change', updateModalFieldsVisibility);
+
+// Lógica de Compressão de Imagem (Base64)
+imageFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 600;
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Comprime em JPEG com 80% de qualidade
+            currentImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            
+            imagePreviewBox.innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover rounded-xl">`;
+        };
+    };
+});
+
 function openModal(link = null) {
     if (link) {
         document.getElementById('modal-title').innerText = "Editar Link";
         document.getElementById('link-id').value = link.id;
         document.getElementById('link-title').value = link.title;
         document.getElementById('link-subtitle').value = link.subtitle || '';
-        document.getElementById('link-url').value = link.url;
-        document.getElementById('link-icon').value = link.icon;
-        document.getElementById('link-highlight').checked = link.highlight || false;
+        document.getElementById('link-icon').value = link.icon || 'ph-link';
+        
+        // Carregar selects
+        actionTypeSelect.value = link.actionType || (link.url.startsWith('#modal') ? link.url.replace('#', '') : 'url');
+        visualStyleSelect.value = link.style || (link.highlight ? 'highlight' : 'standard');
+        
+        // Se for modal, pode deixar a URL normal ou preenchida. Se for link normal, carrega.
+        document.getElementById('link-url').value = (actionTypeSelect.value === 'url') ? link.url : '';
+        
+        currentImageBase64 = link.imageBase64 || null;
+        if (currentImageBase64) {
+            imagePreviewBox.innerHTML = `<img src="${currentImageBase64}" class="w-full h-full object-cover rounded-xl">`;
+        } else {
+            imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
+        }
+        
         updateIconPreview();
     } else {
         document.getElementById('modal-title').innerText = "Adicionar Novo Link";
         linkForm.reset();
         document.getElementById('link-id').value = '';
         document.getElementById('link-icon').value = 'ph-link';
+        actionTypeSelect.value = 'url';
+        visualStyleSelect.value = 'standard';
+        currentImageBase64 = null;
+        imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
         updateIconPreview();
     }
     
+    updateModalFieldsVisibility();
+    
     modal.classList.remove('hidden');
-    // Allow small delay for display block to apply before transition
     setTimeout(() => {
         modal.classList.remove('opacity-0');
         modalContent.classList.remove('scale-95');
@@ -192,11 +282,13 @@ btnCancelModal.addEventListener('click', closeModal);
 
 // Importar links padrões
 const defaultLinks = [
-    { title: 'Shopee', subtitle: 'Frete grátis em milhares de produtos', url: 'https://br.shp.ee/FLxK9z9g', icon: 'ph-shopping-bag', highlight: true },
-    { title: 'Compre pelo WhatsApp', subtitle: 'Atendimento personalizado', url: 'https://wa.me/5534998882385', icon: 'ph-whatsapp-logo', highlight: false },
-    { title: 'Grupo VIP (Promoções)', subtitle: 'Receba novidades em primeira mão', url: 'https://chat.whatsapp.com/DCLpzt7k4zlH2sPkBTXaNM?s=cl&p=a&mlu=3', icon: 'ph-users', highlight: false },
-    { title: 'Localização da Loja', subtitle: 'Venha nos fazer uma visita', url: '#modal-location', icon: 'ph-map-pin', highlight: false },
-    { title: 'O que as clientes dizem', subtitle: 'Avaliações de mamães reais', url: '#modal-feedback', icon: 'ph-chat-centered-text', highlight: false }
+    { title: 'Compre na Shopee', subtitle: 'Aproveite Cupons de Frete', url: 'https://br.shp.ee/FLxK9z9g', icon: 'ph-shopping-bag', actionType: 'url', style: 'shopee' },
+    { title: 'Atendimento VIP', subtitle: 'Fale direto no WhatsApp', url: 'https://wa.me/5534998882385', icon: 'ph-whatsapp-logo', actionType: 'url', style: 'whatsapp' },
+    { title: 'Nossas Clientes (Mães que Amam)', subtitle: 'Participe do nosso Grupo Secreto VIP', url: 'https://chat.whatsapp.com/DCLpzt7k4zlH2sPkBTXaNM?s=cl&p=a&mlu=3', icon: 'ph-star', actionType: 'url', style: 'standard' },
+    { title: 'Nossa Localização', subtitle: 'Conceição das Alagoas - MG', url: '#modal-location', icon: 'ph-map-pin', actionType: 'modal-location', style: 'standard' },
+    { title: 'Acesse nosso catálogo', subtitle: 'Veja todos os modelos disponíveis', url: 'https://www.whatsapp.com/catalog/553498882385/?app_absent=0', icon: 'ph-storefront', actionType: 'url', style: 'standard' },
+    { title: 'Informações de Envio', subtitle: 'Prazos, frete e rastreamento', url: 'https://wa.me/5534998882385', icon: 'ph-truck', actionType: 'url', style: 'standard' },
+    { title: 'O que as clientes dizem', subtitle: 'Avaliações de mamães reais', url: '#modal-feedback', icon: 'ph-chat-centered-text', actionType: 'modal-feedback', style: 'standard' }
 ];
 
 btnImportDefaults.addEventListener('click', async () => {
@@ -235,20 +327,28 @@ linkForm.addEventListener('submit', async (e) => {
     btn.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Salvando...';
 
     const id = document.getElementById('link-id').value;
+    const action = actionTypeSelect.value;
+    const style = visualStyleSelect.value;
+    
+    let finalUrl = '';
+    if (action === 'modal-location') finalUrl = '#modal-location';
+    else if (action === 'modal-feedback') finalUrl = '#modal-feedback';
+    else finalUrl = document.getElementById('link-url').value;
+
     const data = {
         title: document.getElementById('link-title').value,
         subtitle: document.getElementById('link-subtitle').value,
-        url: document.getElementById('link-url').value,
+        url: finalUrl,
         icon: document.getElementById('link-icon').value,
-        highlight: document.getElementById('link-highlight').checked,
+        actionType: action,
+        style: style,
+        imageBase64: style === 'image-card' ? currentImageBase64 : null
     };
 
     try {
         if (id) {
-            // Update
             await updateDoc(doc(db, "linktree_links", id), data);
         } else {
-            // Create
             data.order = maxOrder + 1;
             await addDoc(collection(db, "linktree_links"), data);
         }
