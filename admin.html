@@ -103,9 +103,12 @@
                     <h2 class="text-2xl font-bold text-gray-800">Gerenciar Links</h2>
                     <p class="text-sm text-gray-500">Arraste para reordenar ou adicione novos links para coleções.</p>
                 </div>
-                <div class="flex gap-2">
-                    <button id="btn-import-defaults" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-4 py-2.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all">
-                        <i class="ph-bold ph-download-simple"></i> Links Originais
+                <div class="flex flex-wrap gap-2">
+                    <button id="btn-settings" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all">
+                        <i class="ph-bold ph-gear"></i> Capa
+                    </button>
+                    <button id="btn-import-defaults" class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-4 py-2.5 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 transition-all hidden sm:flex">
+                        <i class="ph-bold ph-download-simple"></i> Originais
                     </button>
                     <button id="btn-add-new" class="bg-brand-500 hover:bg-brand-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-md flex items-center justify-center gap-2 transition-all">
                         <i class="ph-bold ph-plus"></i> Novo Link
@@ -216,6 +219,55 @@
                     <button type="button" id="btn-cancel-modal" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">Cancelar</button>
                     <button type="submit" id="btn-save-link" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-2">
                         <i class="ph-bold ph-check"></i> Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL FOR PROFILE SETTINGS -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200" id="settings-modal-content">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-gray-800">Configurações da Capa</h3>
+                <button id="btn-close-settings" class="text-gray-400 hover:text-gray-700">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="settings-form" class="p-5 space-y-4">
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Foto de Perfil (Logomarca)</label>
+                    <div class="flex items-center gap-3">
+                        <div id="profile-img-preview" class="w-16 h-16 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                            <i class="ph-bold ph-user text-gray-400 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" id="settings-image-file" accept="image/jpeg, image/png, image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Nome da Loja</label>
+                    <input type="text" id="settings-title" required placeholder="Ex: Laços Encantos de Menina" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Subtítulo (Descrição)</label>
+                    <textarea id="settings-subtitle" rows="2" placeholder="Ex: Acessórios infantis com conforto..." class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:outline-none resize-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Frase de Destaque (Colorida)</label>
+                    <input type="text" id="settings-highlight" placeholder="Ex: +6.000 laços entregues 🎀" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                
+                <div class="pt-4 flex gap-3">
+                    <button type="button" id="btn-cancel-settings" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">Cancelar</button>
+                    <button type="submit" id="btn-save-settings" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-md transition-colors flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-check"></i> Salvar Capa
                     </button>
                 </div>
             </form>

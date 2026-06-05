@@ -4,8 +4,21 @@ import {
     collection, 
     onSnapshot, 
     query, 
-    orderBy 
+    orderBy,
+    doc
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+// Fetch Profile Settings
+const profileRef = doc(db, "linktree_settings", "profile");
+onSnapshot(profileRef, (docSnap) => {
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        if(data.imageBase64) document.getElementById('page-profile-img').src = data.imageBase64;
+        if(data.title) document.getElementById('page-title').innerText = data.title;
+        if(data.subtitle) document.getElementById('page-subtitle').innerText = data.subtitle;
+        if(data.highlight) document.getElementById('page-highlight').innerText = data.highlight;
+    }
+});
 
 const linksContainer = document.getElementById('dynamic-links-container');
 const fallbackLinks = document.getElementById('fallback-links');
@@ -24,7 +37,7 @@ window.openDynamicGallery = function(linkId) {
         const href = item.url ? `href="${item.url}" target="_blank"` : `href="#" onclick="event.preventDefault()"`;
         const titleHtml = item.title ? `
             <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3 pt-12">
-                <p class="text-white text-sm font-bold leading-snug break-words">${item.title}</p>
+                <p class="text-white text-base font-bold leading-snug break-words whitespace-pre-wrap">${item.title}</p>
             </div>
         ` : '';
         
@@ -147,8 +160,8 @@ onSnapshot(q, (snapshot) => {
                     </div>
                     <div class="p-4 flex items-center justify-between bg-white relative z-10">
                         <div class="flex-1">
-                            <p class="font-bold text-gray-800 leading-tight">${link.title}</p>
-                            ${link.subtitle ? `<p class="text-xs text-gray-500 font-medium mt-1">${link.subtitle}</p>` : ''}
+                            <h3 class="font-bold text-gray-800 text-lg leading-tight whitespace-pre-wrap">${link.title}</h3>
+                            ${link.subtitle ? `<p class="text-gray-500 text-sm mt-0.5 leading-snug whitespace-pre-wrap">${link.subtitle}</p>` : ''}
                         </div>
                         <div class="w-10 flex justify-end"><i class="ph ph-caret-right text-brand-500 opacity-80 group-hover:translate-x-1 transition-transform"></i></div>
                     </div>
@@ -162,8 +175,8 @@ onSnapshot(q, (snapshot) => {
                         <i class="ph ${link.icon} text-xl"></i>
                     </div>
                     <div class="flex-1 text-center">
-                        <p class="font-bold text-gray-800 leading-tight">${link.title}</p>
-                        ${link.subtitle ? `<p class="text-xs text-gray-500 font-medium">${link.subtitle}</p>` : ''}
+                        <h3 class="font-bold text-gray-800 text-lg leading-tight whitespace-pre-wrap">${link.title}</h3>
+                        ${link.subtitle ? `<p class="text-gray-500 text-sm mt-0.5 leading-snug whitespace-pre-wrap">${link.subtitle}</p>` : ''}
                     </div>
                     <div class="w-10 flex justify-center"><i class="ph ph-caret-right text-gray-400 group-hover:text-brand-500 transition-colors"></i></div>
                 </a>

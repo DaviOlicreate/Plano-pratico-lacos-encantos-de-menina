@@ -10,6 +10,7 @@ import {
     updateDoc, 
     deleteDoc, 
     doc, 
+    setDoc,
     onSnapshot, 
     query, 
     orderBy 
@@ -33,9 +34,21 @@ const btnImportDefaults = document.getElementById('btn-import-defaults');
 const btnCloseModal = document.getElementById('btn-close-modal');
 const btnCancelModal = document.getElementById('btn-cancel-modal');
 
+// Settings Modal
+const btnSettings = document.getElementById('btn-settings');
+const settingsModal = document.getElementById('settings-modal');
+const settingsModalContent = document.getElementById('settings-modal-content');
+const btnCloseSettings = document.getElementById('btn-close-settings');
+const btnCancelSettings = document.getElementById('btn-cancel-settings');
+const settingsForm = document.getElementById('settings-form');
+const settingsImageFile = document.getElementById('settings-image-file');
+const profileImgPreview = document.getElementById('profile-img-preview');
+
 // Estado
 let currentLinks = [];
 let maxOrder = 0;
+let currentProfileSettings = {};
+let currentProfileImageBase64 = null;
 
 // Escutador de Autenticação
 onAuthStateChanged(auth, (user) => {
@@ -106,6 +119,13 @@ function loadLinks() {
         loadingState.classList.add('hidden');
         emptyState.innerHTML = `<span class="text-red-500">Erro de Permissão:</span><br>Vá no Firebase Console > Firestore Database > Rules, e altere para:<br><code class="bg-gray-100 p-2 block mt-2 text-xs text-left">rules_version = '2';<br>service cloud.firestore {<br>&nbsp;&nbsp;match /databases/{database}/documents {<br>&nbsp;&nbsp;&nbsp;&nbsp;match /{document=**} {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read: if true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow write: if request.auth != null;<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>`;
         emptyState.classList.remove('hidden');
+    });
+
+    // Buscar configurações de perfil
+    onSnapshot(doc(db, "linktree_settings", "profile"), (docSnap) => {
+        if (docSnap.exists()) {
+            currentProfileSettings = docSnap.data();
+        }
     });
 }
 
@@ -505,3 +525,98 @@ window.moveDown = async (id, index) => {
 // Mapear globalmente para onclick no HTML
 window.openModal = openModal;
 window.closeModal = closeModal;
+
+// === Lógica de Configurações de Perfil (Capa) ===
+
+function openSettingsModal() {
+    document.getElementById('settings-title').value = currentProfileSettings.title || 'Laços Encantos de Menina';
+    document.getElementById('settings-subtitle').value = currentProfileSettings.subtitle || 'Acessórios infantis com conforto e exclusividade.';
+    document.getElementById('settings-highlight').value = currentProfileSettings.highlight || '+6.000 laços entregues 🎀';
+    
+    currentProfileImageBase64 = currentProfileSettings.imageBase64 || null;
+    if (currentProfileImageBase64) {
+        profileImgPreview.innerHTML = `<img src="${currentProfileImageBase64}" class="w-full h-full object-cover">`;
+    } else {
+        profileImgPreview.innerHTML = `<i class="ph-bold ph-user text-gray-400 text-2xl"></i>`;
+    }
+    
+    settingsModal.classList.remove('hidden');
+    setTimeout(() => {
+        settingsModal.classList.remove('opacity-0');
+        settingsModalContent.classList.remove('scale-95');
+    }, 10);
+}
+
+function closeSettingsModal() {
+    settingsModal.classList.add('opacity-0');
+    settingsModalContent.classList.add('scale-95');
+    setTimeout(() => {
+        settingsModal.classList.add('hidden');
+    }, 200);
+}
+
+btnSettings.addEventListener('click', openSettingsModal);
+btnCloseSettings.addEventListener('click', closeSettingsModal);
+btnCancelSettings.addEventListener('click', closeSettingsModal);
+
+settingsImageFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 400; // Tamanho ideal para avatar
+            let width = img.width;
+            let height = img.height;
+            
+            // Recortar e centralizar para ficar quadrado se necessário (opcional, mas aqui vamos só redimensionar e o CSS do avatar cuida do object-cover)
+            if (width > MAX_WIDTH || height > MAX_WIDTH) {
+                if (width > height) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                } else {
+                    width *= MAX_WIDTH / height;
+                    height = MAX_WIDTH;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            currentProfileImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            profileImgPreview.innerHTML = `<img src="${currentProfileImageBase64}" class="w-full h-full object-cover">`;
+        };
+    };
+});
+
+settingsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-save-settings');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph ph-spinner animate-spin"></i> Salvando...';
+
+    const data = {
+        title: document.getElementById('settings-title').value,
+        subtitle: document.getElementById('settings-subtitle').value,
+        highlight: document.getElementById('settings-highlight').value,
+        imageBase64: currentProfileImageBase64
+    };
+
+    try {
+        await setDoc(doc(db, "linktree_settings", "profile"), data, { merge: true });
+        closeSettingsModal();
+    } catch (error) {
+        console.error("Erro ao salvar perfil:", error);
+        alert("Erro ao salvar as configurações. Tente novamente.");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph-bold ph-check"></i> Salvar Capa';
+    }
+});
