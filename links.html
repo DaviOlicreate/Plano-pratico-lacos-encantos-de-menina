@@ -182,6 +182,80 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
+        /* Modal Bottom Sheet */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 1.5rem 1.5rem 0 0;
+            z-index: 51;
+            padding: 24px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content.show {
+            bottom: 0;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                top: 50%;
+                bottom: auto;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.95);
+                width: 90%;
+                max-width: 500px;
+                border-radius: 1.5rem;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            .modal-content.show {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                visibility: visible;
+                bottom: auto;
+            }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            margin: 0 auto 20px auto;
+        }
+        
+        .map-container iframe {
+            border-radius: 12px;
+            border: 1px solid #f3f4f6;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -253,7 +327,7 @@
                 </a>
 
                 <!-- Localização -->
-                <a href="https://maps.google.com/?q=Rua+Joaquim+Pantaleão+sobrinho,+1528+-+Dona+Maruca,+Conceição+das+Alagoas+-+MG,+38120-000" target="_blank" class="btn-secondary rounded-2xl p-4 flex items-center justify-between group">
+                <a href="#" onclick="openLocationModal(event)" class="btn-secondary rounded-2xl p-4 flex items-center justify-between group">
                     <div class="icon-circle bg-brand-50 text-brand-500 border border-brand-100 group-hover:scale-110 transition-transform">
                         <i class="ph ph-map-pin text-xl"></i>
                     </div>
@@ -318,6 +392,51 @@
         </div>
 
     </main>
+
+    <!-- Modal Localização -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeLocationModal()"></div>
+    <div class="modal-content" id="locationModal">
+        <div class="modal-handle md:hidden" onclick="closeLocationModal()"></div>
+        
+        <div class="text-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Localização da Loja</h2>
+            <p class="text-xs text-gray-500 mt-1 flex items-center justify-center gap-1">
+                <i class="ph-fill ph-map-pin"></i>
+                Rua Joaquim Pantaleão sobrinho, 1528 - Conceição das Alagoas
+            </p>
+        </div>
+
+        <div class="map-container mb-6 flex-1 min-h-[300px]">
+            <iframe src="https://maps.google.com/maps?q=Rua+Joaquim+Pantaleão+sobrinho,+1528+-+Dona+Maruca,+Conceição+das+Alagoas+-+MG,+38120-000&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0; min-height: 300px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="https://maps.google.com/?q=Rua+Joaquim+Pantaleão+sobrinho,+1528+-+Dona+Maruca,+Conceição+das+Alagoas+-+MG,+38120-000" target="_blank" class="flex-1 bg-black text-white font-bold text-center py-3.5 rounded-full hover:bg-gray-800 transition-colors">
+                Obter direções
+            </a>
+            <button onclick="navigator.share ? navigator.share({title: 'Laços Encantos de Menina', url: 'https://maps.google.com/?q=Rua+Joaquim+Pantaleão+sobrinho,+1528+-+Dona+Maruca,+Conceição+das+Alagoas+-+MG,+38120-000'}) : alert('Função de compartilhar não suportada neste navegador.')" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                <i class="ph ph-share-network text-xl"></i>
+            </button>
+            <button onclick="closeLocationModal()" class="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function openLocationModal(e) {
+            e.preventDefault();
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.getElementById('locationModal').classList.add('show');
+            document.body.style.overflow = 'hidden'; // Evita rolagem do fundo
+        }
+
+        function closeLocationModal() {
+            document.getElementById('modalBackdrop').classList.remove('show');
+            document.getElementById('locationModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    </script>
 
 </body>
 </html>
