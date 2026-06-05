@@ -134,40 +134,40 @@ function renderLinks() {
     linksContainer.innerHTML = '';
     currentLinks.forEach((link, index) => {
         const div = document.createElement('div');
-        div.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-4";
+        div.className = "bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-2 sm:gap-4";
         
         const isFirst = index === 0;
         const isLast = index === currentLinks.length - 1;
         const isImage = link.style === 'image-card' && link.imageBase64;
         const iconContent = isImage 
             ? `<img src="${link.imageBase64}" class="w-full h-full object-cover rounded-xl">` 
-            : `<i class="ph ${link.icon || 'ph-link'} text-2xl"></i>`;
+            : `<i class="ph ${link.icon || 'ph-link'} text-xl sm:text-2xl"></i>`;
 
         div.innerHTML = `
-            <div class="flex items-center gap-4 flex-1 overflow-hidden">
-                <div class="w-12 h-12 rounded-xl ${isImage ? '' : 'bg-gray-50'} flex items-center justify-center flex-shrink-0 text-gray-500 border border-gray-100">
+            <div class="flex items-center gap-3 sm:gap-4 flex-1 overflow-hidden">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${isImage ? '' : 'bg-gray-50'} flex items-center justify-center flex-shrink-0 text-gray-500 border border-gray-100">
                     ${iconContent}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-bold text-gray-800 truncate">${link.title}</p>
-                    <p class="text-xs text-gray-500 truncate">${link.subtitle || link.url}</p>
+                    <p class="font-bold text-gray-800 text-sm sm:text-base truncate whitespace-pre-wrap">${link.title}</p>
+                    <p class="text-xs text-gray-500 truncate whitespace-pre-wrap">${link.subtitle || link.url}</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-1 sm:gap-2">
-                <div class="flex flex-col gap-1 mr-2">
+            <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                <div class="flex flex-col gap-1 mr-1 sm:mr-2">
                     <button onclick="moveUp('${link.id}', ${index})" class="text-gray-400 hover:text-brand-500 disabled:opacity-30 disabled:hover:text-gray-400" ${isFirst ? 'disabled' : ''}>
-                        <i class="ph-bold ph-caret-up"></i>
+                        <i class="ph-bold ph-caret-up text-sm sm:text-base"></i>
                     </button>
                     <button onclick="moveDown('${link.id}', ${index})" class="text-gray-400 hover:text-brand-500 disabled:opacity-30 disabled:hover:text-gray-400" ${isLast ? 'disabled' : ''}>
-                        <i class="ph-bold ph-caret-down"></i>
+                        <i class="ph-bold ph-caret-down text-sm sm:text-base"></i>
                     </button>
                 </div>
-                <button onclick="editLink('${link.id}')" class="w-10 h-10 rounded-lg hover:bg-brand-50 text-gray-500 hover:text-brand-500 transition-colors flex items-center justify-center">
-                    <i class="ph-bold ph-pencil-simple text-lg"></i>
+                <button onclick="editLink('${link.id}')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-brand-50 text-gray-500 hover:text-brand-500 transition-colors flex items-center justify-center">
+                    <i class="ph-bold ph-pencil-simple text-base sm:text-lg"></i>
                 </button>
-                <button onclick="deleteLink('${link.id}')" class="w-10 h-10 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center">
-                    <i class="ph-bold ph-trash text-lg"></i>
+                <button onclick="deleteLink('${link.id}')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors flex items-center justify-center">
+                    <i class="ph-bold ph-trash text-base sm:text-lg"></i>
                 </button>
             </div>
         `;
