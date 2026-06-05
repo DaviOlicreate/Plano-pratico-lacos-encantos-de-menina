@@ -156,17 +156,18 @@
 
                     <button 
                         onClick={handleCopy}
-                        className={`w-full py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-200 ${
+                        className={`w-full py-2.5 rounded-xl font-semibold flex items-center justify-center transition-all duration-200 ${
                             copied 
                             ? 'bg-green-100 text-green-700 border border-green-200' 
                             : 'bg-pink-500 text-white hover:bg-pink-600 shadow-sm hover:shadow active:transform active:scale-95'
                         }`}
                     >
-                        {copied ? (
-                            <><Icons.Check /> Copiado com sucesso! </>
-                        ) : (
-                            <><Icons.Copy /> Copiar Mensagem </>
-                        )}
+                        <div className={copied ? 'hidden' : 'flex items-center gap-2 justify-center'}>
+                            <Icons.Copy /> Copiar Mensagem 
+                        </div>
+                        <div className={copied ? 'flex items-center gap-2 justify-center' : 'hidden'}>
+                            <Icons.Check /> Copiado com sucesso! 
+                        </div>
                     </button>
                 </div>
             );
