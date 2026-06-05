@@ -79,4 +79,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Lightbox Logic
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImage');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const zoomableImages = document.querySelectorAll('.mockup-img, .ig-screenshot');
+
+    if (lightbox && lightboxImg) {
+        zoomableImages.forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+            });
+        });
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) lightbox.classList.remove('active');
+        });
+    }
+
+    // Bio Carousel Logic
+    const bioSlides = document.querySelectorAll('.bio-slide');
+    const prevBio = document.getElementById('prevBio');
+    const nextBio = document.getElementById('nextBio');
+    let currentBio = 0;
+
+    if(prevBio && nextBio && bioSlides.length > 0) {
+        const showBio = (index) => {
+            bioSlides.forEach((slide, i) => {
+                slide.style.display = i === index ? 'block' : 'none';
+            });
+        };
+        
+        prevBio.addEventListener('click', () => {
+            currentBio = (currentBio - 1 + bioSlides.length) % bioSlides.length;
+            showBio(currentBio);
+        });
+        
+        nextBio.addEventListener('click', () => {
+            currentBio = (currentBio + 1) % bioSlides.length;
+            showBio(currentBio);
+        });
+    }
 });

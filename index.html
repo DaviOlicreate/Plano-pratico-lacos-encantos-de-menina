@@ -118,8 +118,8 @@
                         <h3>Fundo de Funil</h3>
                     </div>
                     <div class="stage-content">
-                        <div class="status-badge danger">Desastroso</div>
-                        <p>O cliente precisa ir pro WhatsApp implorar por orçamento. Um atrito enorme quando poderia resolver tudo em 3 cliques na Shopee.</p>
+                        <div class="status-badge warning">Fricção Elevada</div>
+                        <p>O cliente precisa ir para o WhatsApp solicitar um orçamento manual. Um atrito que poderia ser resolvido em 3 cliques através de um link direto da Shopee.</p>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                     <div class="card-icon"><i class="ri-layout-top-line text-gradient"></i></div>
                     <h3>Destaques (Highlights)</h3>
                     <div class="hands-on-content">
-                        <p class="danger-text mb-10"><i class="ri-alert-line"></i> <strong>Erro atual:</strong> Visualmente poluídos (fotos aleatórias) e temas inúteis mantidos (ex: COPA 2026).</p>
+                        <p class="warning-text mb-10"><i class="ri-alert-line"></i> <strong>Atenção:</strong> Destaques com fotos variadas que fogem do padrão visual e temas antigos (ex: COPA 2026), que poderiam ser revitalizados em campanhas específicas e não no menu principal.</p>
                         <h4 class="mt-20">Estrutura Ideal de Destaques:</h4>
                         <ul class="action-list">
                             <li><i class="ri-pushpin-line"></i> Comece Aqui (Quem somos, material)</li>
@@ -190,7 +190,7 @@
                     <div class="shopee-content fade-up">
                         <div class="badge-tag">Alarme Vermelho</div>
                         <h2>Auditoria Completa <span class="shopee-color">Shopee</span></h2>
-                        <p class="lead-text">Sua Shopee não é uma loja, é uma vitrine esquecida. A falta de histórico assusta o algoritmo e o cliente.</p>
+                        <p class="lead-text">A loja na Shopee está subaproveitada. Sem histórico de vendas e avaliações, o algoritmo limita a entrega e o cliente sente insegurança.</p>
                         
                         <div class="audit-points">
                             <div class="audit-item glass">
@@ -198,8 +198,8 @@
                                 <p>Apenas 6 produtos, 14 seguidores, avaliação 5.0 baseada em 1 nota. Taxa de chat sem dados.</p>
                             </div>
                             <div class="audit-item glass">
-                                <h4><i class="ri-close-circle-line warning-text"></i> Credibilidade Zero</h4>
-                                <p>Um cliente orgânico não compra porque a loja parece inexperiente. Ninguém quer ser o "primeiro a testar".</p>
+                                <h4><i class="ri-shield-user-line warning-text"></i> Baixa Tração Inicial</h4>
+                                <p>Sem avaliações orgânicas, o cliente novo hesita. Precisamos aquecer a loja para gerar as primeiras provas sociais e quebrar o gelo.</p>
                             </div>
                             <div class="audit-item glass">
                                 <h4><i class="ri-image-line text-gradient"></i> Anúncios e Preços</h4>
@@ -330,6 +330,9 @@
                             <li>Algoritmo da Shopee ocultando a loja</li>
                             <li>Vendas por impulso perdidas pelo atrito</li>
                         </ul>
+                        <div class="swot-explanation mt-20" style="font-size: 0.85rem; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px;">
+                            <strong>Como o Plano resolve:</strong> O novo Linktree elimina o atrito de vendas por impulso; e a campanha VIP WhatsApp transfere autoridade para a Shopee, ativando o algoritmo ao seu favor.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -356,7 +359,6 @@
                             <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Melhorar SEO dos 6 anúncios na Shopee.</li>
                             <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Cadastrar produtos na central de promoções "Leve Mais, Pague Menos".</li>
                             <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Criar capas padrão minimalistas para os Destaques.</li>
-                            <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Arquivar destaques inúteis ("COPA 2026").</li>
                             <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Post no Stories ensinando a comprar na Shopee.</li>
                             <li><i class="ri-arrow-right-circle-fill text-gradient"></i> Responder chat vazio da Shopee para subir a taxa.</li>
                         </ul>
@@ -461,13 +463,35 @@
                     <div class="card-icon"><i class="ri-instagram-fill text-gradient"></i></div>
                     <h3>Reestruturação do Perfil</h3>
                     <div class="hands-on-content">
-                        <h4>Sugestão de Nova Bio</h4>
-                        <div class="code-block">
-                            <p><strong>Laços Encantos de Menina 🎀</strong></p>
-                            <p>Especialista em laços que não machucam.</p>
-                            <p>Tornando momentos ainda mais inesquecíveis.</p>
-                            <p>📦 Mais de 6.000 laços enviados para todo o Brasil.</p>
-                            <p>👇 Compre direto pela Shopee com frete especial!</p>
+                        <div class="bio-carousel-container">
+                            <div class="bio-header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <h4>Sugestão de Novas Bios</h4>
+                                <div class="bio-nav" style="display: flex; gap: 8px;">
+                                    <button id="prevBio" style="background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 4px; padding: 4px 8px; cursor: pointer;"><i class="ri-arrow-left-s-line"></i></button>
+                                    <button id="nextBio" style="background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 4px; padding: 4px 8px; cursor: pointer;"><i class="ri-arrow-right-s-line"></i></button>
+                                </div>
+                            </div>
+                            <div class="code-block bio-slide active" id="bio1">
+                                <p><strong>Laços Encantos de Menina 🎀</strong></p>
+                                <p>Especialista em laços que não machucam.</p>
+                                <p>Tornando momentos ainda mais inesquecíveis.</p>
+                                <p>📦 Mais de 6.000 laços enviados para todo o Brasil.</p>
+                                <p>👇 Compre direto pela Shopee com frete especial!</p>
+                            </div>
+                            <div class="code-block bio-slide" id="bio2" style="display: none;">
+                                <p><strong>Laços Encantos de Menina 🎀</strong></p>
+                                <p>Acessórios Infantis Boutique ✨</p>
+                                <p>Conforto e luxo para a sua princesa.</p>
+                                <p>🛍️ Estoque no Brasil | Envios Rápidos</p>
+                                <p>👇 Confira nosso catálogo completo na Shopee</p>
+                            </div>
+                            <div class="code-block bio-slide" id="bio3" style="display: none;">
+                                <p><strong>Laços Encantos de Menina 🎀</strong></p>
+                                <p>Cuidando do visual de bebês e meninas 💖</p>
+                                <p>Laços flexíveis que não marcam a cabecinha.</p>
+                                <p>🎀 Já fizemos +6.000 mamães felizes</p>
+                                <p>👇 Garanta o seu kit pela Shopee</p>
+                            </div>
                         </div>
                         
                         <h4 class="mt-20">Estrutura do Linktree/Site</h4>
@@ -521,6 +545,39 @@
                             <li><i class="ri-checkbox-circle-line"></i> <strong>3.</strong> Responder orçamentos rasos no WhatsApp direcionando para o link de compra (não perder tempo montando carrinho manual).</li>
                             <li><i class="ri-checkbox-circle-line"></i> <strong>4.</strong> Inserir panfleto "Nos avalie com foto e ganhe cupom" dentro de todas as caixas.</li>
                         </ul>
+                    </div>
+                </div>
+
+                <!-- SHOPEE SEO -->
+                <div class="hands-on-card glass fade-up">
+                    <div class="card-icon"><i class="ri-search-eye-line text-gradient"></i></div>
+                    <h3>Otimização de SEO (Shopee)</h3>
+                    <div class="hands-on-content">
+                        <h4>Como montar títulos para o algoritmo recomendar</h4>
+                        <div class="code-block">
+                            <p class="danger-text">❌ <strong>Errado:</strong> Laço Rosa Encanto</p>
+                            <p class="success-text">✅ <strong>Certo:</strong> Laço de Cabelo Infantil Rosa Cabelo de Menina Não Machuca Festa Aniversário Kit com 3</p>
+                        </div>
+                        <ul class="action-list mt-20">
+                            <li><i class="ri-text"></i> Use termos de busca: "infantil", "bebê", "não machuca".</li>
+                            <li><i class="ri-price-tag-3-line"></i> Deixe claro o formato: "Kit", "Unidade", "Par".</li>
+                            <li><i class="ri-image-edit-line"></i> A foto 1 precisa ter uma "etiqueta" chamativa (ex: Conforto Premium).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- WHATSAPP CAMPAIGN -->
+                <div class="hands-on-card glass fade-up delay-1">
+                    <div class="card-icon"><i class="ri-fire-fill text-gradient"></i></div>
+                    <h3>Campanha: Aquecendo a Shopee</h3>
+                    <div class="hands-on-content">
+                        <h4>Ação p/ Grupo VIP e Contatos de Clientes Antigas</h4>
+                        <p class="mb-10" style="color: var(--text-secondary); font-size: 0.9rem;">Objetivo: Transferir clientes do Whats para a Shopee, gerando as primeiras vendas e aquecendo a loja.</p>
+                        <div class="code-block script-block">
+                            <p><em>"Meninas! 🥰 Pra celebrar a nossa nova loja oficial na Shopee, preparei uma oferta surpresa só para as nossas clientes VIPs:"</em></p>
+                            <p><em>"Quem fizer um pedido pela Shopee hoje vai ganhar um <strong>Laço Surpresa de Brinde</strong> e + <strong>15% OFF</strong> na compra!"</em></p>
+                            <p><em>"É só fechar o pedido pelo link e me mandar um 'EU QUERO' aqui pra eu separar o seu brinde! 👇 [Link da Shopee]"</em></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -650,6 +707,12 @@
             <p>Plano de Crescimento & Estruturação de Escala</p>
         </div>
     </footer>
+
+    <!-- Lightbox Overlay -->
+    <div class="lightbox-overlay" id="lightbox">
+        <div class="lightbox-close" id="lightboxClose"><i class="ri-close-line"></i></div>
+        <img src="" alt="Zoom" class="lightbox-image" id="lightboxImage">
+    </div>
 
     <script src="main.js"></script>
 </body>
