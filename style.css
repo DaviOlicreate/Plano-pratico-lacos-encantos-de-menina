@@ -968,13 +968,24 @@ h1, h2, h3, h4, h5 {
 
 /* Responsive */
 @media (max-width: 992px) {
-    .shopee-grid, .comparison-grid, .hands-on-grid {
+    .shopee-grid, .hands-on-grid {
         grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .comparison-grid {
+        flex-direction: column;
         gap: 24px;
     }
     
     .vs-badge {
         margin: 10px auto;
+        transform: rotate(90deg); /* Faz o VS apontar para baixo quando empilhado */
+    }
+
+    .priority-table th, .priority-table td {
+        padding: 12px 10px; /* Reduz padding para caber mais na tela */
+        font-size: 0.9rem;
     }
 
     .funnel-stage {
