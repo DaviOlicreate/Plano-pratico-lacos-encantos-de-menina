@@ -506,6 +506,22 @@
         </div>
     </div>
 
+    <!-- Dynamic Gallery Modal -->
+    <div id="modal-dynamic-gallery" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none sm:items-center hidden">
+        <div class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 pointer-events-none" id="dynamic-gallery-backdrop" onclick="closeDynamicGallery()"></div>
+        <div class="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl max-h-[90vh] flex flex-col transform translate-y-full sm:translate-y-10 sm:opacity-0 transition-all duration-300 pointer-events-auto" id="dynamic-gallery-content">
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md rounded-t-3xl z-10">
+                <h3 class="font-bold text-gray-800 text-lg" id="dynamic-gallery-title">Galeria</h3>
+                <button onclick="closeDynamicGallery()" class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <div class="p-4 overflow-y-auto" id="dynamic-gallery-body">
+                <div id="dynamic-gallery-grid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openLocationModal(e) {
             e.preventDefault();
@@ -527,7 +543,38 @@
             document.getElementById('feedbackModal').classList.remove('show');
             document.body.style.overflow = '';
         }
-    </script>
 
+        function closeFeedbackModal() {
+            const modal = document.getElementById('modal-feedback');
+            const backdrop = document.getElementById('feedback-backdrop');
+            const content = document.getElementById('feedback-content');
+            
+            backdrop.classList.remove('opacity-100');
+            content.classList.remove('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100');
+            content.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('pointer-events-auto');
+                backdrop.classList.add('pointer-events-none');
+            }, 300);
+        }
+
+        function closeDynamicGallery() {
+            const modal = document.getElementById('modal-dynamic-gallery');
+            const backdrop = document.getElementById('dynamic-gallery-backdrop');
+            const content = document.getElementById('dynamic-gallery-content');
+            
+            backdrop.classList.remove('opacity-100');
+            content.classList.remove('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100');
+            content.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('pointer-events-auto');
+                backdrop.classList.add('pointer-events-none');
+            }, 300);
+        }
+    </script>
 </body>
 </html>

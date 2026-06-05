@@ -168,7 +168,8 @@
                             <option value="highlight">Destaque Pink (Novo!)</option>
                             <option value="shopee">Estilo Shopee</option>
                             <option value="whatsapp">Estilo WhatsApp</option>
-                            <option value="image-card">Card com Foto</option>
+                            <option value="image-card">Card Único com Foto</option>
+                            <option value="image-gallery">Galeria (Múltiplas Fotos em Janela)</option>
                         </select>
                     </div>
                 </div>
@@ -199,6 +200,15 @@
                             <input type="file" id="link-image-file" accept="image/jpeg, image/png, image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100">
                             <p class="text-xs text-gray-400 mt-1">Imagens serão comprimidas automaticamente para carregar rápido.</p>
                         </div>
+                    </div>
+                </div>
+
+                <div id="gallery-upload-container" class="hidden">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Fotos da Galeria (Máx 15)</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="file" id="link-gallery-files" multiple accept="image/jpeg, image/png, image/webp" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100">
+                        <div id="gallery-preview-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-2"></div>
+                        <p class="text-xs text-gray-400">Você pode selecionar várias fotos de uma vez. Elas serão comprimidas e exibidas em grade.</p>
                     </div>
                 </div>
                 

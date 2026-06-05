@@ -163,8 +163,12 @@ const iconContainer = document.getElementById('icon-container');
 const imageUploadContainer = document.getElementById('image-upload-container');
 const imageFile = document.getElementById('link-image-file');
 const imagePreviewBox = document.getElementById('image-preview-box');
+const galleryUploadContainer = document.getElementById('gallery-upload-container');
+const galleryFiles = document.getElementById('link-gallery-files');
+const galleryPreviewGrid = document.getElementById('gallery-preview-grid');
 
 let currentImageBase64 = null;
+let currentGalleryBase64 = [];
 
 function updateModalFieldsVisibility() {
     const action = actionTypeSelect.value;
@@ -181,9 +185,15 @@ function updateModalFieldsVisibility() {
     if (style === 'image-card') {
         iconContainer.classList.add('hidden');
         imageUploadContainer.classList.remove('hidden');
+        galleryUploadContainer.classList.add('hidden');
+    } else if (style === 'image-gallery') {
+        iconContainer.classList.add('hidden');
+        imageUploadContainer.classList.add('hidden');
+        galleryUploadContainer.classList.remove('hidden');
     } else {
         iconContainer.classList.remove('hidden');
         imageUploadContainer.classList.add('hidden');
+        galleryUploadContainer.classList.add('hidden');
     }
 }
 
@@ -224,6 +234,62 @@ imageFile.addEventListener('change', (e) => {
     };
 });
 
+// Lógica para Múltiplas Imagens (Galeria)
+galleryFiles.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files).slice(0, 15); // Máximo 15 imagens
+    if (files.length === 0) return;
+    
+    // Mostra loading no botão de salvar para evitar salvar antes de comprimir
+    document.getElementById('btn-save-link').disabled = true;
+    galleryPreviewGrid.innerHTML = '<p class="col-span-4 text-sm text-gray-500">Comprimindo imagens...</p>';
+    
+    currentGalleryBase64 = [];
+    
+    for (let file of files) {
+        await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800; // Um pouco maior para galerias
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    currentGalleryBase64.push(canvas.toDataURL('image/jpeg', 0.8));
+                    resolve();
+                };
+            };
+        });
+    }
+    
+    renderGalleryPreview();
+    document.getElementById('btn-save-link').disabled = false;
+});
+
+function renderGalleryPreview() {
+    galleryPreviewGrid.innerHTML = '';
+    currentGalleryBase64.forEach((base64) => {
+        galleryPreviewGrid.innerHTML += `
+            <div class="aspect-square rounded-lg overflow-hidden border border-gray-200">
+                <img src="${base64}" class="w-full h-full object-cover">
+            </div>
+        `;
+    });
+}
+
 function openModal(link = null) {
     if (link) {
         document.getElementById('modal-title').innerText = "Editar Link";
@@ -246,6 +312,9 @@ function openModal(link = null) {
             imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
         }
         
+        currentGalleryBase64 = link.galleryBase64 || [];
+        renderGalleryPreview();
+        
         updateIconPreview();
     } else {
         document.getElementById('modal-title').innerText = "Adicionar Novo Link";
@@ -256,6 +325,8 @@ function openModal(link = null) {
         visualStyleSelect.value = 'standard';
         currentImageBase64 = null;
         imagePreviewBox.innerHTML = `<i class="ph-bold ph-image text-gray-400 text-2xl"></i>`;
+        currentGalleryBase64 = [];
+        renderGalleryPreview();
         updateIconPreview();
     }
     
@@ -342,7 +413,8 @@ linkForm.addEventListener('submit', async (e) => {
         icon: document.getElementById('link-icon').value,
         actionType: action,
         style: style,
-        imageBase64: style === 'image-card' ? currentImageBase64 : null
+        imageBase64: style === 'image-card' ? currentImageBase64 : null,
+        galleryBase64: style === 'image-gallery' ? currentGalleryBase64 : null
     };
 
     try {

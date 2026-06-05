@@ -1,3 +1,4 @@
+// Import the functions you need from the SDKs you need
 import { db } from './firebase-config.js';
 import { 
     collection, 
@@ -9,29 +10,57 @@ import {
 const linksContainer = document.getElementById('dynamic-links-container');
 const fallbackLinks = document.getElementById('fallback-links');
 
+let allLinksData = [];
+
+window.openDynamicGallery = function(linkId) {
+    const link = allLinksData.find(l => l.id === linkId);
+    if(!link || !link.galleryBase64 || link.galleryBase64.length === 0) return;
+    
+    document.getElementById('dynamic-gallery-title').innerText = link.title;
+    
+    const grid = document.getElementById('dynamic-gallery-grid');
+    grid.innerHTML = '';
+    link.galleryBase64.forEach(base64 => {
+        grid.innerHTML += `<img src="${base64}" class="w-full h-auto rounded-xl object-cover shadow-sm aspect-[4/5] border border-gray-100">`;
+    });
+    
+    const modal = document.getElementById('modal-dynamic-gallery');
+    const backdrop = document.getElementById('dynamic-gallery-backdrop');
+    const content = document.getElementById('dynamic-gallery-content');
+    
+    modal.classList.remove('hidden');
+    void modal.offsetWidth; // force reflow
+    
+    modal.classList.add('pointer-events-auto');
+    backdrop.classList.remove('pointer-events-none');
+    
+    backdrop.classList.add('opacity-100');
+    content.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:opacity-0');
+    content.classList.add('translate-y-0', 'sm:translate-y-0', 'sm:opacity-100');
+};
+
 // Buscar Links em Tempo Real
 const q = query(collection(db, "linktree_links"), orderBy("order", "asc"));
 onSnapshot(q, (snapshot) => {
     
-    // Se o banco de dados estiver vazio, mostramos os links padrão do HTML (fallback)
     if (snapshot.empty) {
         if(fallbackLinks) fallbackLinks.classList.remove('hidden');
         if(linksContainer) linksContainer.innerHTML = '';
         return;
     }
 
-    // Se temos links no banco, ocultamos o fallback estático
     if(fallbackLinks) fallbackLinks.classList.add('hidden');
     
     let htmlContent = '';
+    allLinksData = [];
     
     snapshot.forEach((docSnap) => {
-        const link = docSnap.data();
+        const link = { id: docSnap.id, ...docSnap.data() };
+        allLinksData.push(link);
         
         let linkAttributes = `href="${link.url}" target="_blank"`;
         let modalClick = '';
 
-        // Backward compatibility and actionType support
         const isModalLocation = link.actionType === 'modal-location' || link.url === '#modal-location';
         const isModalFeedback = link.actionType === 'modal-feedback' || link.url === '#modal-feedback';
 
@@ -41,6 +70,11 @@ onSnapshot(q, (snapshot) => {
         } else if (isModalFeedback) {
             linkAttributes = `href="#"`;
             modalClick = `onclick="openFeedbackModal(event)"`;
+        }
+        
+        if (link.style === 'image-gallery') {
+            linkAttributes = `href="#"`;
+            modalClick = `onclick="event.preventDefault(); window.openDynamicGallery('${link.id}')"`;
         }
 
         const style = link.style || (link.highlight ? 'highlight' : 'standard');
@@ -109,7 +143,7 @@ onSnapshot(q, (snapshot) => {
                 </a>
             `;
         } else {
-            // Estilo Secundário (Branco/Padrão)
+            // Estilo Secundário (Branco/Padrão) + image-gallery que usa o mesmo visual
             htmlContent += `
                 <a ${linkAttributes} ${modalClick} class="bg-white border border-brand-100 rounded-2xl p-4 flex items-center justify-between group transition-all hover:border-brand-400 hover:shadow-soft hover:-translate-y-0.5">
                     <div class="w-10 h-10 rounded-full bg-brand-50 text-brand-500 border border-brand-100 group-hover:scale-110 transition-transform flex items-center justify-center flex-shrink-0">
