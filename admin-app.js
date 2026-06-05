@@ -533,6 +533,10 @@ function openSettingsModal() {
     document.getElementById('settings-subtitle').value = currentProfileSettings.subtitle || 'Acessórios infantis com conforto e exclusividade.';
     document.getElementById('settings-highlight').value = currentProfileSettings.highlight || '+6.000 laços entregues 🎀';
     
+    const size = currentProfileSettings.imageSize || '110';
+    document.getElementById('settings-image-size').value = size;
+    document.getElementById('settings-image-size-label').innerText = `${size}px`;
+    
     currentProfileImageBase64 = currentProfileSettings.imageBase64 || null;
     if (currentProfileImageBase64) {
         profileImgPreview.innerHTML = `<img src="${currentProfileImageBase64}" class="w-full h-full object-cover">`;
@@ -558,6 +562,10 @@ function closeSettingsModal() {
 btnSettings.addEventListener('click', openSettingsModal);
 btnCloseSettings.addEventListener('click', closeSettingsModal);
 btnCancelSettings.addEventListener('click', closeSettingsModal);
+
+document.getElementById('settings-image-size').addEventListener('input', (e) => {
+    document.getElementById('settings-image-size-label').innerText = `${e.target.value}px`;
+});
 
 settingsImageFile.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -613,7 +621,8 @@ settingsForm.addEventListener('submit', async (e) => {
         title: document.getElementById('settings-title').value,
         subtitle: document.getElementById('settings-subtitle').value,
         highlight: document.getElementById('settings-highlight').value,
-        imageBase64: currentProfileImageBase64
+        imageBase64: currentProfileImageBase64,
+        imageSize: document.getElementById('settings-image-size').value
     };
 
     try {

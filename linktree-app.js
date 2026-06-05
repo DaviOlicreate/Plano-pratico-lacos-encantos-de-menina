@@ -17,6 +17,14 @@ onSnapshot(profileRef, (docSnap) => {
         if(data.title) document.getElementById('page-title').innerText = data.title;
         if(data.subtitle) document.getElementById('page-subtitle').innerText = data.subtitle;
         if(data.highlight) document.getElementById('page-highlight').innerText = data.highlight;
+        
+        if(data.imageSize) {
+            const size = parseInt(data.imageSize);
+            const container = document.getElementById('page-profile-img-container');
+            container.style.width = `${size}px`;
+            container.style.height = `${size}px`;
+            container.style.top = `-${size / 2}px`;
+        }
     }
 });
 

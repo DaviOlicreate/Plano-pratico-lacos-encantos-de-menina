@@ -245,6 +245,14 @@
                         </div>
                         <div class="flex-1">
                             <input type="file" id="settings-image-file" accept="image/jpeg, image/png, image/webp, image/svg+xml, .svg, .ico" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-500 hover:file:bg-brand-100">
+                            
+                            <div class="mt-3">
+                                <label class="block text-xs font-bold text-gray-500 mb-1 flex justify-between">
+                                    <span>Tamanho da Imagem</span>
+                                    <span id="settings-image-size-label">110px</span>
+                                </label>
+                                <input type="range" id="settings-image-size" min="60" max="200" step="5" value="110" class="w-full accent-brand-500">
+                            </div>
                         </div>
                     </div>
                 </div>
