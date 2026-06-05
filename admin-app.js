@@ -566,6 +566,13 @@ settingsImageFile.addEventListener('change', (e) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
+        // Se for SVG ou ICO, salva diretamente a base64 (não passa pelo Canvas que quebra SVG/Transparência)
+        if (file.type === 'image/svg+xml' || file.name.endsWith('.ico') || file.type === 'image/x-icon') {
+            currentProfileImageBase64 = event.target.result;
+            profileImgPreview.innerHTML = `<img src="${currentProfileImageBase64}" class="w-full h-full object-cover">`;
+            return;
+        }
+
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
