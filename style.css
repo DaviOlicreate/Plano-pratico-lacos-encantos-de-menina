@@ -970,16 +970,17 @@ h1, h2, h3, h4, h5 {
 @media (max-width: 992px) {
     .shopee-grid, .comparison-grid, .hands-on-grid {
         grid-template-columns: 1fr;
+        gap: 24px;
     }
     
     .vs-badge {
-        margin: 0 auto;
+        margin: 10px auto;
     }
 
     .funnel-stage {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 20px;
+        gap: 15px;
     }
     
     .stage-header {
@@ -988,7 +989,40 @@ h1, h2, h3, h4, h5 {
 }
 
 @media (max-width: 768px) {
-    .hero h1 { font-size: 3rem; }
+    .hero h1 { font-size: 2.5rem; }
+    .hero p { font-size: 1.1rem; }
+    .hero { padding: 120px 0 60px; }
+    
+    .section-padding { padding: 60px 0; }
+    
+    h2.section-title { font-size: 2rem; text-align: center; }
+    
     .swot-grid { grid-template-columns: 1fr; }
     .nav-links { display: none; }
+    
+    .hands-on-card, .comparison-card, .swot-card {
+        padding: 24px;
+    }
+    
+    .iframe-container iframe {
+        height: 650px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 { font-size: 2rem; }
+    .hero p { font-size: 1rem; }
+    .section-padding { padding: 50px 0; }
+    .container { padding: 0 16px; }
+    
+    h2.section-title { font-size: 1.75rem; }
+    
+    .hands-on-card, .comparison-card, .swot-card {
+        padding: 20px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
 }
