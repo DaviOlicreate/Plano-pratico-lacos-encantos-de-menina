@@ -9,11 +9,35 @@
 </head>
 <body>
 
-<h2 class="sr-only">Relatório de auditoria completa da loja Laços encantos de Menina na Shopee</h2>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8fafc;
+    --color-border-tertiary: #e2e8f0;
+    --color-border-secondary: #cbd5e1;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #64748b;
+    --border-radius-lg: 16px;
+    --border-radius-md: 10px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .report { padding: 0.5rem 0 2rem; }
+  body {
+    background-color: #f1f5f9;
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    padding: 20px;
+  }
+  .report {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--color-background-primary);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  }
   .header { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
   .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
   .store-name { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
